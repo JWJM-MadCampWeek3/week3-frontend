@@ -1,13 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import type { FormInstance } from "antd";
-import { Button, Form, Input, Space } from "antd";
-import { Card } from "antd";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { Button, Card, Flex, Alert } from "antd";
 import TextField from "@mui/material/TextField";
-import { Flex, Radio } from "antd";
-import { Alert } from "antd";
 
 const baseStyle: React.CSSProperties = {
   width: 350,
@@ -15,7 +10,7 @@ const baseStyle: React.CSSProperties = {
 
 const API_URL = "http://143.248.219.4:8080";
 
-const SignUpPage: React.FC = () => {
+const SignUp: React.FC = () => {
 
   const navigate = useNavigate();
 
@@ -175,6 +170,7 @@ const SignUpPage: React.FC = () => {
           variant='standard'
           margin='normal'
           onChange={(e) => setPassword(e.target.value)}
+          helperText="가급적 실제로 사용하지 않는 비밀번호를 입력해주세요."
         />
       </Flex>
 
@@ -212,4 +208,4 @@ const SignUpPage: React.FC = () => {
   );
 };
 
-export default SignUpPage;
+export default SignUp;

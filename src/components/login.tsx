@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useContext} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, Card } from "antd";
+import { UserContext } from "../App.tsx";
 
 import { Alert } from "antd";
 
@@ -14,6 +15,12 @@ const LoginPage: React.FC = () => {
   const [is_fail, setIs_fail] = React.useState<boolean>(false);
   const [fail_msg, setFail_msg] = React.useState<string>("");
   const navigate = useNavigate();
+  const context = useContext(UserContext);
+  if (!context) {
+    return <div>로딩 중...</div>;
+  }
+
+  const { user, setUser } = context;
 
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values);
@@ -26,6 +33,14 @@ const LoginPage: React.FC = () => {
         password: password,
       });
       if (response.data.success){
+        // TODO : 로그인 성공시 유저 정보 저장 (백과 상의)
+        setUser({
+          id: id,
+          nickname: response.data.nickname,
+          bj_id: response.data.bj_id,
+          tier: response.data.tier,
+          image: response.data.image
+        });
         setIs_fail(false);
         navigate("/home");
       }else{

@@ -7,6 +7,11 @@ const StyledTabs = styled(Tabs)`
   .ant-tabs-nav {
     margin: 0;
   }
+  .ant-tabs-tab {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px 50px;
+  }
 `;
 
 const Header: React.FC = () => (
@@ -19,7 +24,7 @@ const Header: React.FC = () => (
         { label: "랭킹", key: "2" },
         { label: "문제", key: "3" },
       ]}
-      style={{ backgroundColor: "white"}}
+      style={{ backgroundColor: "white", paddingTop: "15px"}}
     />
   </header>
 );
