@@ -4,30 +4,27 @@ import {
   NotificationOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme, Typography } from "antd";
+import { Layout, Menu, theme, Typography,Card } from "antd";
 import Header from "./header.tsx";
 import { Outlet } from "react-router-dom";
 import StopWatch from "./stopwatch.tsx";
+import styled from 'styled-components';
+import Profile from "./profile.tsx";
+import MyGroup from "./myGroup.tsx";
+import ToDo from "./todo.tsx";
 
 const { Title } = Typography;
 const { Content, Sider } = Layout;
 
-const CustomMenuItem = ({ children, ...props }) => {
-  const style = {
-    padding: "12px", // 패딩 설정
-    display: "flex", // Flexbox 레이아웃 사용
-    justifyContent: "center", // 가로축 기준 가운데 정렬
-    alignItems: "center", // 세로축 기준 가운데 정렬
-    width: "100%", // 부모 컨테이너의 전체 너비 사용
-    height: 200,
-  };
-
-  return (
-    <Menu.Item {...props} style={style}>
-      {children}
-    </Menu.Item>
-  );
-};
+const StyledCard = styled(Card)`
+  .ant-card-head {
+    background-color: #448aff;
+  }
+  .ant-card-head-title{
+    color: white;
+    font-size: 20px;
+  }
+`;
 
 const BasicLayout: React.FC = () => {
   const {
@@ -42,32 +39,27 @@ const BasicLayout: React.FC = () => {
   return (
     <Layout
       style={{
-        minHeight: "100vh",
+        height: "100vh",
         display: "flex",
         flexDirection: "column",
       }}
     >
       <Header />
       <Layout style={{ flex: 1 }}>
-        <Sider width={250} style={{ background: colorBgContainer }}>
+        <Sider id="sider" width={270} style={{ background: colorBgContainer, overflow: 'auto' }}>
           <Menu
             mode='inline'
             defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub2"]}
+            defaultOpenKeys={["sub2","sub4"]}
           >
             <Menu.SubMenu key='sub1' icon={<UserOutlined />} title='나의 정보'>
-              <Menu.Item key='1-1'> {`대충 유저 정보`}</Menu.Item>
+              <Profile/>
             </Menu.SubMenu>
             
             <Menu.SubMenu key='sub2' icon={<LaptopOutlined />} title='공부시간'>
-              <CustomMenuItem key='2-1'>
-              <div style={{ textAlign: "center", margin: "16px", height:20}}>
-                <Title level={5} style={{ margin: 0 }}>
-                  {formattedDate}
-                </Title>
-              </div>
+              <StyledCard title={formattedDate} style={{margin:10, textAlign: "center", color: "#2962ff"}}>
                 <StopWatch />
-              </CustomMenuItem>
+              </StyledCard>
             </Menu.SubMenu>
 
             <Menu.SubMenu
@@ -75,7 +67,7 @@ const BasicLayout: React.FC = () => {
               icon={<NotificationOutlined />}
               title='나의 그룹들'
             >
-              <Menu.Item key='3-1'>{`대충 나의 그룹들`}</Menu.Item>
+              <MyGroup/>
             </Menu.SubMenu>
 
             <Menu.SubMenu
@@ -83,7 +75,7 @@ const BasicLayout: React.FC = () => {
               icon={<NotificationOutlined />}
               title='오늘 풀 문제들'
             >
-              <Menu.Item key='4-1'>{`대충 오늘 풀 문제들`}</Menu.Item>
+              <ToDo/>
             </Menu.SubMenu>
           </Menu>
 

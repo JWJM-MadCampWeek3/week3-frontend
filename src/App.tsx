@@ -30,9 +30,9 @@ export const UserContext = React.createContext<UserContextType | null>(null);
 
 const App = () => {
   const [user, setUser] = useState({
-    id: "",
-    nickname: "",
-    bj_id: "",
+    id: "TEST",
+    nickname: "테스트",
+    bj_id: "test",
     tier: 0,
     image: "./images/user.png"
   });
