@@ -10,22 +10,29 @@ import { FixedSizeList, ListChildComponentProps } from "react-window";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 
-function renderRow(props: ListChildComponentProps, members: any[]) {
+const API_URL = "http://143.248.219.4:8080";
+
+function RenderRow(props: ListChildComponentProps, members: any[]) {
   const { index, style } = props;
   const member = members[index];
+  const [user, setUser] = React.useState<any>({});
+  console.log(member)
+  axios.post(`${API_URL}/user_Info`, { id: member }).then((response) => {
+    console.log(response.data);
+    setUser(response.data);
+  }).catch((error) => {
+    console.error("There was an error fetching the group info", error);
+  });
 
   return (
     <ListItem style={style} key={index} component='div' disablePadding>
       <ListItemButton>
-        <ListItemAvatar>
-          <Avatar alt={member.name} src={member.avatar} />
-        </ListItemAvatar>
         <ListItemText
-          primary={member.name}
+          primary={user.nickname}
           secondary={
             <React.Fragment>
               <Typography component='span' variant='body2' color='text.primary'>
-                {member.detail}
+                {user.bio}
               </Typography>
             </React.Fragment>
           }
@@ -44,11 +51,10 @@ const GroupYeolpumta = () => {
   React.useEffect(() => {
     // Fetch group members from server
     axios
-      .post("/group/Info", { group_name: "default" })
+      .post(`${API_URL}/group/Info`, { group_name: group_name })
       .then((response) => {
         const { data } = response;
-        console.log(data.group_members);
-        setGroupMembers(data.group_members);
+        setGroupMembers(data.members);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -71,7 +77,7 @@ const GroupYeolpumta = () => {
         itemCount={groupMembers.length}
         overscanCount={5}
       >
-        {(props) => renderRow(props, groupMembers)}
+        {(props) => RenderRow(props, groupMembers)}
       </FixedSizeList>
     </Box>
   );
