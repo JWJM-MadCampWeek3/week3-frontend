@@ -3,7 +3,7 @@ import { useStopwatch } from "react-timer-hook";
 import { Button, Card, Flex, Typography } from "antd";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseOutlinedIcon from "@mui/icons-material/PauseOutlined";
-import io from 'socket.io-client';
+import { useWebSocket } from "./websocket.tsx";
 
 const { Text, Title } = Typography;
 
@@ -11,6 +11,24 @@ const API_URL = "http://143.248.219.4:8080";
 
 const MyStopwatch = () => {
   
+  const { socket } = useWebSocket();
+
+  //TODO 웹소켓 백과 상의...
+  useEffect(() => {
+    if (socket) {
+      socket.onmessage = (event) => {
+        // Handle incoming WebSocket messages
+      };
+    }
+  }, [socket]);
+
+  const triggerEvent = () => {
+    if (socket) {
+      socket.send('Your message here');
+    }
+  };
+
+
   useEffect(() => {
     // 날짜 확인 및 처리 함수
     const checkDateChange = () => {

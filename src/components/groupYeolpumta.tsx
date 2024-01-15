@@ -1,4 +1,5 @@
 import * as React from "react";
+import {useSearchParams} from "react-router-dom";
 import Box from "@mui/material/Box";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -34,9 +35,12 @@ function RenderRow(props: ListChildComponentProps & { data: any[] }) {
 const GroupYeolpumta = () => {
   const [groupMembers, setGroupMembers] = React.useState<string[]>([]);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const group_name = searchParams.get("group_name");
+
   React.useEffect(() => {
     // Fetch group members from server
-    axios.post(`${API_URL}/group/Info`, { group_name: "default" })
+    axios.post(`${API_URL}/group/Info`, { group_name: group_name })
       .then((response) => {
         const memberIds = response.data.members;
         return Promise.all(memberIds.map(memberId =>
@@ -55,7 +59,6 @@ const GroupYeolpumta = () => {
   return (
     <Box
       sx={{
-        width: "70%",
         height: 400,
         bgcolor: "background.paper",
       }}
