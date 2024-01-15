@@ -50,7 +50,7 @@ const BasicLayout: React.FC = () => {
           <Menu
             mode='inline'
             defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub2","sub4"]}
+            defaultOpenKeys={["sub1","sub2","sub3","sub4"]}
           >
             <Menu.SubMenu key='sub1' icon={<UserOutlined />} title='나의 정보'>
               <Profile/>

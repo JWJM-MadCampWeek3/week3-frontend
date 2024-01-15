@@ -29,6 +29,7 @@ const ToDo: React.FC = () => {
   };
 
   const loadMoreData = () => {
+    console.log("todo loadMoreData")
     if (loading) {
       return;
     }
@@ -54,7 +55,7 @@ const ToDo: React.FC = () => {
     <div
       id='scrollableDiv'
       style={{
-        height: 400,
+        height: 200,
         overflow: "auto",
         width: "100%",
         padding: "0 16px",

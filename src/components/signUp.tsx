@@ -61,15 +61,12 @@ const SignUp: React.FC = () => {
       setIs_error(true);
       return;
     }
-
-    console.log("signUp");
     await axios.post(`${API_URL}/signup`, {
       id: id,
       nickname: nickname,
       password: password,
       bj_id: bj_id,
     }).then((res) => {
-      console.log(res.data);
       navigate("/login");
     }).catch((err) => {
       console.log(err);
@@ -117,7 +114,6 @@ const SignUp: React.FC = () => {
         bj_id: bj_id,
       })
       .then((res) => {
-        console.log("?")
         setBj_id_check(true);
         res.data.exist ? setIs_error(false) : setIs_error(true);
         res.data.exist ? setIs_valid(true) : setIs_valid(false);

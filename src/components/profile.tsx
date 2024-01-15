@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useStopwatch } from "react-timer-hook";
 import { Button, Card, Flex, Typography, Image } from "antd";
 import { UserContext } from "../App.tsx";
@@ -8,11 +8,23 @@ const { Text, Title } = Typography;
 
 const Profile = () => {
   const context = useContext(UserContext);
+
+  // useEffect를 조건문 밖으로 옮김
+  useEffect(() => {
+    if (context) {
+      const storedUserInfo = sessionStorage.getItem('userInfo');
+      if (storedUserInfo) {
+        context.setUser(JSON.parse(storedUserInfo));
+      }
+    }
+  }, []);
+
   if (!context) {
     return <div>로딩 중...</div>;
   }
+
   const { user, setUser } = context;
-  console.log(user.image);
+
 
   //TODO 유저 정보 바꾸기...
   //TODO 수정기능 구현하기
@@ -30,8 +42,8 @@ const Profile = () => {
           style={{ borderRadius: "50%" }}
         />
         <Text>{user.id}</Text>
-        <Text>{user.id}</Text>
-        <Text>{user.id}</Text>
+        <Text>{user.tier}</Text>
+        <Text>{user.bio}</Text>
       </Flex>
     </Card>
   );

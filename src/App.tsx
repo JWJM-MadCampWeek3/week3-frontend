@@ -6,18 +6,20 @@ import LoginPage from "./page/loginPage.tsx";
 import SignUpPage from "./page/signUpPage.tsx";
 import BasicLayout from "./components/basicLayout.tsx";
 import IntroPage from "./page/introPage.tsx";
+import GroupPage from "./page/groupPage.tsx";
+import PageNotFound from './page/404.tsx';
 
-const Test1 = () => <div>Test1</div>;
-const Test2 = () => <div>Test2</div>;
-const Test3 = () => <div>Test3</div>;
+const Rank = () => <div>Rank</div>;
+const Problem = () => <div>Problem</div>;
 
-// TODO : 유저 정보 생각 (백과 상의)
 interface User {
   id: string;
   nickname: string;
   bj_id: string;
-  tier: number;
+  tier: string;
   image: string;
+  bio: string;
+  group: string[];
 }
 
 interface UserContextType {
@@ -33,8 +35,10 @@ const App = () => {
     id: "TEST",
     nickname: "테스트",
     bj_id: "test",
-    tier: 0,
-    image: "./images/user.png"
+    tier: "티어 없음",
+    image: "./images/user.png",
+    bio: "테스트입니다.",
+    group: ["default"]
   });
 
   return (
@@ -47,10 +51,11 @@ const App = () => {
               <Route path='/signup' element={<SignUpPage />} />
               <Route path='/login' element={<LoginPage />} />
               <Route path='/' element={<BasicLayout />}>
-                <Route path='test1' element={<Test1 />} />
-                <Route path='test2' element={<Test2 />} />
-                <Route path='test3' element={<Test3 />} />
+                <Route path='group' element={<GroupPage />} />
+                <Route path='rank' element={<Rank />} />
+                <Route path='problem' element={<Problem />} />
               </Route>
+              <Route path="*" element={ <PageNotFound/> }/>
             </Routes>
           </BrowserRouter>
         </UserContext.Provider>

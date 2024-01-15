@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
@@ -9,6 +9,8 @@ import { Alert } from "antd";
 
 const API_URL = "http://143.248.219.4:8080";
 
+const tier_list = ["티어 없음", "Bronze V", "Bronze IV", "Bronze III", "Bronze II", "Bronze I", "Silver V", "Silver IV", "Silver III", "Silver II", "Silver I", "Gold V", "Gold IV", "Gold III", "Gold II", "Gold I", "Platinum V", "Platinum IV", "Platinum III", "Platinum II", "Platinum I", "Diamond V", "Diamond IV", "Diamond III", "Diamond II", "Diamond I", "Ruby V", "Ruby IV", "Ruby III", "Ruby II", "Ruby I", "Master"]
+
 const LoginPage: React.FC = () => {
   const [id, setId] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
@@ -16,14 +18,16 @@ const LoginPage: React.FC = () => {
   const [fail_msg, setFail_msg] = React.useState<string>("");
   const navigate = useNavigate();
   const context = useContext(UserContext);
+
+  // 조건부 렌더링을 여기서 수행
   if (!context) {
     return <div>로딩 중...</div>;
   }
 
-  const { user, setUser } = context;
+  const { setUser } = context;
 
   const onFinish = (values: any) => {
-    console.log("Received values of form: ", values);
+    console.log("Received values of form: ");
   };
 
   const onLogin = async () => {
@@ -33,16 +37,21 @@ const LoginPage: React.FC = () => {
         password: password,
       });
       if (response.data.success){
-        // TODO : 로그인 성공시 유저 정보 저장 (백과 상의)
-        setUser({
+        const userInfo = {
           id: id,
-          nickname: response.data.nickname,
-          bj_id: response.data.bj_id,
-          tier: response.data.tier,
-          image: response.data.image
-        });
+          nickname: response.data.userinfo.nickname,
+          bj_id: response.data.userinfo.bj_id,
+          tier: tier_list[response.data.userinfo.tier],
+          image: response.data.userinfo.profileImageUrl,
+          bio: response.data.userinfo.bio,
+          group: response.data.userinfo.group,
+        };
+        // Session Storage에 사용자 정보 저장
+        sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
+        // 상태 업데이트
+        setUser(userInfo);
         setIs_fail(false);
-        navigate("/home");
+        navigate("/group");
       }else{
         setIs_fail(true);
         setFail_msg(response.data.message);
