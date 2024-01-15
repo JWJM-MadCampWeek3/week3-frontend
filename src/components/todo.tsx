@@ -33,7 +33,6 @@ const ToDo = () => {
   useEffect(() => {
     if (context) {
       const storedUserInfo = sessionStorage.getItem("userInfo");
-      console.log("storagedUserInfo", storedUserInfo);
       if (storedUserInfo) {
         context.setUser(JSON.parse(storedUserInfo));
       }
@@ -42,12 +41,11 @@ const ToDo = () => {
 
   useEffect(() => {
     if (context) {
-      console.log(context.user.id);
       axios
         .post(`${API_URL}/user_Info`, { id: context.user.id })
         .then((response) => {
+          console.log(response.data.todo_problems)
           // Assuming the response body has a 'group' field that is an array
-          console.log(response.data.todo_problems);
           setGroup(response.data.todo_problems);
         })
         .catch((error) => {

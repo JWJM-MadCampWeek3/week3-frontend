@@ -1,4 +1,4 @@
-import React, {useContext } from "react";
+import React, {useContext, createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
@@ -11,6 +11,8 @@ const API_URL = "http://143.248.219.4:8080";
 
 const tier_list = ["티어 없음", "Bronze V", "Bronze IV", "Bronze III", "Bronze II", "Bronze I", "Silver V", "Silver IV", "Silver III", "Silver II", "Silver I", "Gold V", "Gold IV", "Gold III", "Gold II", "Gold I", "Platinum V", "Platinum IV", "Platinum III", "Platinum II", "Platinum I", "Diamond V", "Diamond IV", "Diamond III", "Diamond II", "Diamond I", "Ruby V", "Ruby IV", "Ruby III", "Ruby II", "Ruby I", "Master"]
 
+const WebSocketContext = createContext<WebSocket | null>(null);
+
 const LoginPage: React.FC = () => {
   const [id, setId] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
@@ -18,6 +20,13 @@ const LoginPage: React.FC = () => {
   const [fail_msg, setFail_msg] = React.useState<string>("");
   const navigate = useNavigate();
   const context = useContext(UserContext);
+
+  const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
+  useEffect(() => {
+    const ws = new WebSocket(`ws://143.248.219.4:8080/ws/${context?.user.id}`);
+    setWebSocket(ws);
+    console.log("WebSocket created",ws)
+  }, [context]);
 
   // 조건부 렌더링을 여기서 수행
   if (!context) {

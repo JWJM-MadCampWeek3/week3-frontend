@@ -85,7 +85,6 @@ const SignUp: React.FC = () => {
         id: id,
       })
       .then((res) => {
-        console.log(res.data);
         setId_vaild(!res.data.exist)
         !res.data.exist ? setIs_error(false) : setIs_error(true);
         !res.data.exist ? setIs_valid(true) : setIs_valid(false);

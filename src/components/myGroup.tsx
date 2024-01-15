@@ -30,7 +30,6 @@ const MyGroup = () => {
   useEffect(() => {
     if (context) {
       const storedUserInfo = sessionStorage.getItem("userInfo");
-      console.log("storagedUserInfo", storedUserInfo);
       if (storedUserInfo) {
         context.setUser(JSON.parse(storedUserInfo));
       }
@@ -39,12 +38,11 @@ const MyGroup = () => {
 
   useEffect(() => {
     if (context) {
-      console.log(context.user.id);
       axios
         .post(`${API_URL}/user_Info`, { id: context.user.id })
         .then((response) => {
           // Assuming the response body has a 'group' field that is an array
-          console.log(response.data.group);
+          console.log(response.data.group)
           setGroup(response.data.group);
         })
         .catch((error) => {

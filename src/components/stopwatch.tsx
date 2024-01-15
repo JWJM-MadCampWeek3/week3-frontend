@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useStopwatch } from "react-timer-hook";
 import { Button, Card, Flex, Typography } from "antd";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -10,6 +10,7 @@ const { Text, Title } = Typography;
 const API_URL = "http://143.248.219.4:8080";
 
 const MyStopwatch = () => {
+  
   useEffect(() => {
     // 날짜 확인 및 처리 함수
     const checkDateChange = () => {
@@ -30,12 +31,7 @@ const MyStopwatch = () => {
     // 컴포넌트 언마운트 시 인터벌 정리
     return () => clearInterval(intervalId);
   }, []);
-
-  useEffect(() => {
-    io(`${API_URL}/timer`);
-    console.log("음...")
-  },[]);
-
+  
   //TODO stopwatch 시작,끝 누를때마다 time table 업데이트
   const {
     seconds,
