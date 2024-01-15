@@ -51,7 +51,7 @@ const LoginPage: React.FC = () => {
         // 상태 업데이트
         setUser(userInfo);
         setIs_fail(false);
-        navigate("/group");
+        navigate("/group?group_name=default");
       }else{
         setIs_fail(true);
         setFail_msg(response.data.message);

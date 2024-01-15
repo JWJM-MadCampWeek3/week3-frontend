@@ -22,6 +22,8 @@
     "react-router-dom": "^6.21.1",
     "react-scripts": "5.0.1",
     "react-timer-hook": "^3.0.7",
+    "react-window": "^1.8.10",
+    "socket.io-client": "^4.7.4",
     "styled-components": "^6.1.8",
     "web-vitals": "^2.1.4"
   },
@@ -51,6 +53,7 @@
   },
   "proxy": "https://solved.ac",
   "devDependencies": {
-    "@types/node": "^20.11.0"
+    "@types/node": "^20.11.0",
+    "@types/socket.io-client": "^3.0.0"
   }
 }

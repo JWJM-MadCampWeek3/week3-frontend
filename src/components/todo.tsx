@@ -1,89 +1,108 @@
-import React, { useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { Avatar, Divider, List, Skeleton, Checkbox } from "antd";
+import React, { useEffect, useState, useContext } from "react";
+import axios from "axios";
+import { UserContext } from "../App.tsx";
+import Box from "@mui/material/Box";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import Checkbox from "@mui/material/Checkbox";
+import { FixedSizeList } from "react-window";
+import { Card } from "antd";
 
-//TODO Group 정보 정하기
-interface DataType {
-  gender: string;
-  name: {
-    title: string;
-    first: string;
-    last: string;
-  };
-  email: string;
-  picture: {
-    large: string;
-    medium: string;
-    thumbnail: string;
-  };
-  nat: string;
-}
+const API_URL = "http://143.248.219.4:8080";
 
-const ToDo: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<DataType[]>([]);
+const ToDo = () => {
+  const [group, setGroup] = useState([]);
+  const [checked, setChecked] = useState<number[]>([]);
+  const context = useContext(UserContext);
 
-  const onCheckboxChange = (checked: boolean, item: DataType) => {
-    console.log(`Item ${item.email} is checked: ${checked}`);
-    // 여기에서 체크 상태에 따른 추가적인 로직을 구현할 수 있습니다.
-  };
+  const handleToggle = (value) => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
 
-  const loadMoreData = () => {
-    console.log("todo loadMoreData")
-    if (loading) {
-      return;
+    if (currentIndex === -1) {
+      newChecked.push(value);
+      console.log(`Checked: ${group[value]}`); // Logging the item name
+    } else {
+      newChecked.splice(currentIndex, 1);
+      console.log(`Unchecked: ${group[value]}`); // Logging the item name
     }
-    setLoading(true);
-    fetch(
-      "https://randomuser.me/api/?results=10&inc=name,gender,email,nat,picture&noinfo"
-    )
-      .then((res) => res.json())
-      .then((body) => {
-        setData([...data, ...body.results]);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  };
 
+    setChecked(newChecked);
+  };
   useEffect(() => {
-    loadMoreData();
+    if (context) {
+      const storedUserInfo = sessionStorage.getItem("userInfo");
+      console.log("storagedUserInfo", storedUserInfo);
+      if (storedUserInfo) {
+        context.setUser(JSON.parse(storedUserInfo));
+      }
+    }
   }, []);
 
+  useEffect(() => {
+    if (context) {
+      console.log(context.user.id);
+      axios
+        .post(`${API_URL}/user_Info`, { id: context.user.id })
+        .then((response) => {
+          // Assuming the response body has a 'group' field that is an array
+          console.log(response.data.todo_problems);
+          setGroup(response.data.todo_problems);
+        })
+        .catch((error) => {
+          console.error("There was an error fetching the group info", error);
+        });
+    }
+    // Replace with your actual endpoint and logic for fetching user info
+  }, [context?.user]);
+
+  if (!context) {
+    return <div>로딩 중...</div>;
+  }
+
+  function renderRow(props) {
+    const { index, style, data } = props;
+
+    return (
+      <ListItem style={style} key={index} component='div' disablePadding>
+        <ListItemButton>
+          <Checkbox
+            edge='end'
+            onChange={() => handleToggle(index)}
+            checked={checked.indexOf(index) !== -1}
+          />
+          <ListItemText primary={`${data[index]}`} />
+        </ListItemButton>
+      </ListItem>
+    );
+  }
+
+  if (!context) {
+    return <div>로딩 중...</div>;
+  }
+
   return (
-    <div
-      id='scrollableDiv'
-      style={{
-        height: 200,
-        overflow: "auto",
-        width: "100%",
-        padding: "0 16px",
-        border: "1px solid rgba(140, 140, 140, 0.35)",
-      }}
-    >
-      <InfiniteScroll
-        dataLength={data.length}
-        next={loadMoreData}
-        hasMore={data.length < 50}
-        loader={<Skeleton paragraph={{ rows: 1 }} active />}
-        endMessage={<Divider plain>오늘의 목표 문제가 더 없습니다.</Divider>}
-        scrollableTarget='scrollableDiv'
+    <Card style={{ margin: 10 }}>
+      <Box
+        sx={{
+          width: "100%",
+          maxHeight: 200,
+          bgcolor: "background.paper",
+        }}
       >
-        <List
-          dataSource={data}
-          renderItem={(item) => (
-            <List.Item key={item.email}>
-              <Checkbox
-                onChange={(e) => onCheckboxChange(e.target.checked, item)}
-              >
-                {item.name.first} {item.name.last}
-              </Checkbox>
-            </List.Item>
-          )}
-        />
-      </InfiniteScroll>
-    </div>
+        <FixedSizeList
+          height={200}
+          width='100%'
+          itemSize={46}
+          itemCount={group.length}
+          overscanCount={5}
+          itemData={group} // pass groups as itemData to renderRow
+        >
+          {renderRow}
+        </FixedSizeList>
+      </Box>
+    </Card>
   );
 };
 

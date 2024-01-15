@@ -1,42 +1,47 @@
-import React, {useContext} from "react";
+import React, { useContext, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { Button, Flex } from 'antd';
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Button, Flex, Card } from "antd";
 import { UserContext } from "../App.tsx";
+import io from 'socket.io-client';
+import GroupYeolpumta from "../components/groupYeolpumta.tsx";
+
+const API_URL = "http://143.248.219.4:8080";
 
 const GroupPage = () => {
   const context = useContext(UserContext);
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const group_name = searchParams.get("group_name");
+  console.log(group_name);
+
+  useEffect(() => {
+    if (context) {
+      const storedUserInfo = sessionStorage.getItem("userInfo");
+      if (storedUserInfo) {
+        context.setUser(JSON.parse(storedUserInfo));
+      }
+    }
+    console.log("???")
+  },[]);
 
   if (!context) {
     return <div>로딩 중...</div>;
   }
 
   const { user, setUser } = context;
-    
-  const API_URL = "http://143.248.219.4:8080";
 
 
-  const handleLogin = () => {
-    // /login으로 이동
-    navigate("/login");
-  };
-
+  // TODO 그룹 설명 추가
   return (
-    <div className={"intro"}>
-      <div className={"intro_title"}>알고리즘</div>
-      <div className={"intro_subtitle"}>
-      우리는 알고리즘 스터디입니다
-      사이트 설명입니다.
-      대충 개 짱 쩐다는 이야기...
-      인트로 멘트 어쩌구 저쩌구구
-      </div>
-      <Button type="primary" onClick={() => {navigate("/login")}}>
-        로그인
-      </Button>
-      <Button type="primary" onClick={() => {navigate("/signup")}}>
-        회원가입
-      </Button>
+    <div className={"group-page"}>
+      <Card title={group_name} bordered={false} style={{ width: "70%" }}>
+        <p>그룹 설명입니다</p>
+      </Card>
+      <Card title={`${group_name}이 풀 문제들`} bordered={false} style={{ width: "70%" }}>
+        <p>그룹 문제입니다</p>
+      </Card>
+      <GroupYeolpumta/>
     </div>
   );
 };

@@ -20,7 +20,7 @@ const Header: React.FC = () => {
   const onTabClick = (key: string) => {
     switch (key) {
       case "1":
-        navigate('/group'); // '그룹' 탭의 경로
+        navigate('/group?group_name=default'); // '그룹' 탭의 경로
         break;
       case "2":
         navigate('/rank'); // '랭킹' 탭의 경로

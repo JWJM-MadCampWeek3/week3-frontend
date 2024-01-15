@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import axios from "axios";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext,useEffect } from "react";
 import LoginPage from "./page/loginPage.tsx";
 import SignUpPage from "./page/signUpPage.tsx";
 import BasicLayout from "./components/basicLayout.tsx";
