@@ -2,14 +2,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { DownOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Button, Dropdown, Space,DatePicker } from "antd";
+import { Button, Dropdown, Space, DatePicker, Row, Col } from "antd";
 import axios from "axios";
 import { UserContext } from "../App.tsx";
-import type { DatePickerProps } from 'antd';
-
-const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-  console.log(date, dateString);
-};
 
 const API_URL = "http://143.248.219.4:8080";
 
@@ -21,6 +16,8 @@ const RankHeader = () => {
   const navigate = useNavigate();
   const context = useContext(UserContext);
   const [items, setItems] = React.useState<any[]>([]);
+
+  const [isDate, setIsDate] = React.useState(true);
 
   // useEffect를 조건문 밖으로 옮김
   useEffect(() => {
@@ -39,7 +36,7 @@ const RankHeader = () => {
         label: group,
         onClick: () => {
           // Redirect to the selected group when an item is clicked
-          navigate(`/rank?group_name=${group}`);
+          navigate(`/rank?group_name=${group}&isDate=${isDate}`);
         },
       }))
     );
@@ -66,7 +63,6 @@ const RankHeader = () => {
 
   const group_name = searchParams.get("group_name");
 
-
   const enterLoading = (index: number) => {
     setLoadings((state) => {
       const newLoadings = [...state];
@@ -85,12 +81,46 @@ const RankHeader = () => {
 
   return (
     <>
-      <Dropdown menu={{ items }} placement='bottomLeft'>
-        <Button shape='round' size={"large"}>
-          {group_name}
-          <DownOutlined />
-        </Button>
-      </Dropdown>
+      <Row>
+        <Col span={20} style={{ height: 50, margin: "auto 0" }}>
+          <Space direction='horizontal'>
+            <Dropdown menu={{ items }} placement='bottomLeft'>
+              <Button shape='round' size={"large"}>
+                {group_name}
+                <DownOutlined />
+              </Button>
+            </Dropdown>
+          </Space>
+        </Col>
+        <Col
+          span={4}
+          style={{ height: 50, margin: "auto 0", textAlign: "right" }}
+        >
+          {isDate ? (
+            <Button
+              onClick={() => {
+                setIsDate(false);
+                navigate(`/rank?group_name=${group_name}&isDate=false`);
+              }}
+              shape='round'
+              size={"large"}
+            >
+              한달 랭킹
+            </Button>
+          ) : (
+            <Button
+              onClick={() => {
+                setIsDate(true);
+                navigate(`/rank?group_name=${group_name}&isDate=true`);
+              }}
+              shape='round'
+              size={"large"}
+            >
+              하루 랭킹
+            </Button>
+          )}
+        </Col>
+      </Row>
     </>
   );
 };

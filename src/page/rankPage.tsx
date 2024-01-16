@@ -2,10 +2,17 @@ import React, { useRef, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { SearchOutlined } from "@ant-design/icons";
+import { Typography } from "antd";
 import type { GetRef, TableColumnsType, TableColumnType } from "antd";
 import { Button, Input, Space, Table } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
+import type { DatePickerProps } from "antd";
+import { DatePicker } from "antd";
+import dayjs from "dayjs";
+import NumCalculator from 'antd/es/theme/util/calc/NumCalculator';
+
+const { Text, Title } = Typography;
 
 type InputRef = GetRef<typeof Input>;
 
@@ -17,9 +24,36 @@ interface DataType {
   key: React.Key;
   nickname: string;
   bj_id: string;
-  duration: number;
+  duration: string;
   solvedCount: string;
   rank: number;
+}
+
+const today = new Date();
+const yesterday = new Date(today);
+yesterday.setDate(today.getDate() - 1);
+
+const year = yesterday.getFullYear();
+const month = String(yesterday.getMonth() + 1).padStart(2, "0");
+const day = String(yesterday.getDate()).padStart(2, "0");
+
+const yesterdayDateString = `${year}-${month}-${day}`;
+
+const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1);
+
+const year_month = lastMonth.getFullYear();
+const month_month = String(lastMonth.getMonth() + 1).padStart(2, "0");
+
+const lastMonthFormatted = `${year_month}-${month_month}`;
+
+console.log(lastMonthFormatted); // 출력: "2021-12"
+
+function formatTime(seconds) {
+  const hours = Math.floor(seconds / 3600); // 1시간 = 3600초
+  const minutes = Math.floor((seconds % 3600) / 60); // 1분 = 60초
+  const remainingSeconds = seconds % 60;
+
+  return `${hours}시간 ${minutes}분 ${remainingSeconds}초`;
 }
 
 const RankPage: React.FC = () => {
@@ -167,38 +201,69 @@ const RankPage: React.FC = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const group_name = searchParams.get("group_name");
+  const isDate = searchParams.get("isDate");
+
+  const [date, setDate] = useState(yesterdayDateString);
+  const [month, setMonth] = useState(lastMonthFormatted);
 
   useEffect(() => {
-    loadRankers(currentPage); // 페이지가 변경될 때 랭킹 데이터 로드
+    if (isDate === "true") {
+      console.log("true", date);
+      loadDateRankers();
+    } else {
+      console.log("false", month);
+      loadMonthRankers();
+    }
+  }, [group_name, currentPage, date, isDate, month]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [group_name, currentPage]);
-
-  const loadRankers = (page) => {
+  useEffect(() => {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
-  
+
     const year = yesterday.getFullYear();
     const month = String(yesterday.getMonth() + 1).padStart(2, "0");
     const day = String(yesterday.getDate()).padStart(2, "0");
-  
-    const yesterdayDateString = `${year}-${month}-${day}`;
 
-    console.log(currentPage);
+    const yesterdayDateString = `${year}-${month}-${day}`;
+    setDate(yesterdayDateString);
+  }, []);
+
+  const loadDateRankers = () => {
     axios
       .post(`${API_URL}/rank/individual_day`, {
         group_name: group_name,
-        date: "2024-01-16",
+        date: date,
       })
       .then((response) => {
         const rankersData = response.data;
         const updatedRankers = rankersData.map((ranker, index) => ({
           ...ranker,
+          duration: formatTime(ranker.duration), // 시간 포맷 변경 (초 -> 시간
           rank: index + 1, // 순위 계산
           key: ranker.id, // 고유한 key 값을 설정
         }));
-        console.log(updatedRankers);
+        setRankers(updatedRankers);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const loadMonthRankers = () => {
+    axios
+      .post(`${API_URL}/rank/individual_month`, {
+        group_name: group_name,
+        date: month,
+      })
+      .then((response) => {
+        const rankersData = response.data;
+        const updatedRankers = rankersData.map((ranker, index) => ({
+          ...ranker,
+          duration: formatTime(ranker.duration), // 시간 포맷 변경 (초 -> 시간
+          rank: index + 1, // 순위 계산
+          key: ranker.id, // 고유한 key 값을 설정
+        }));
         setRankers(updatedRankers);
       })
       .catch((error) => {
@@ -211,16 +276,60 @@ const RankPage: React.FC = () => {
     setCurrentPage(page);
   };
 
+  const onDateChange: DatePickerProps["onChange"] = (date, dateString) => {
+    console.log(date, dateString);
+    if(date===null){
+      setDate("");
+    }else{
+      setDate(dateString);
+    }
+  };
+
+  const onMonthChange: DatePickerProps["onChange"] = (date, dateString) => {
+    console.log("???", dateString);
+    console.log(date, dateString);
+    if(date===null){
+      setMonth("");
+    }else{
+      setMonth(dateString);
+    }
+  };
+  //TODO 로직 꼬인거 고치기
   return (
-    <Table
-      columns={columns}
-      dataSource={rankers}
-      pagination={{
-        pageSize: 10,
-        onChange: handlePageChange, // 페이지 변경 이벤트 처리
-      }}
-      style={{ width: "100%", margin: "10px auto 20px 0" }}
-    />
+    <>
+      <Space direction='horizontal'>
+        {isDate === "true" ? (
+          <DatePicker
+            defaultValue={dayjs(yesterdayDateString, "YYYY-MM-DD")}
+            // value={dayjs(date, "YYYY-MM-DD")}
+            placeholder='랭킹 날짜'
+            onChange={onDateChange}
+            size='large'
+          />
+        ) : (
+          <DatePicker
+            defaultValue={dayjs(lastMonthFormatted, "YYYY-MM")}
+            picker='month'
+            // value={dayjs(month, "YYYY-MM")}
+            placeholder='랭킹 날짜'
+            onChange={onMonthChange}
+            size='large'
+          />
+        )}
+
+        <Text>의 랭킹</Text>
+      </Space>
+
+      <Table
+        columns={columns}
+        dataSource={rankers}
+        pagination={{
+          pageSize: 10,
+          onChange: handlePageChange, // 페이지 변경 이벤트 처리
+        }}
+        style={{ width: "100%", margin: "10px auto 20px 0" }}
+      />
+    </>
   );
 };
 

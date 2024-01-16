@@ -26,6 +26,8 @@ function RenderRow(props: ListChildComponentProps & { data: any[] }) {
   }
   
   const { user, setUser } = context;
+
+  // TODO: 이미 넣었던 문제 버튼 변경...ㅋㅋ
   return (
     <ListItem style={style} key={index} component='div' disablePadding>
       <ListItemButton>
@@ -35,7 +37,7 @@ function RenderRow(props: ListChildComponentProps & { data: any[] }) {
         />
         <AddCircleIcon
           onClick={()=>{
-            console.log(user.id,problem);
+            console.log(user.id,(problem));
             axios.post(`${API_URL}/user/problem/insert`, {
               id: user.id,
               problem: problem,

@@ -23,7 +23,7 @@ const Header: React.FC = () => {
         navigate('/group?group_name=default'); // '그룹' 탭의 경로
         break;
       case "2":
-        navigate('/rank?group_name=default'); // '랭킹' 탭의 경로
+        navigate('/rank?group_name=default&isDate=true'); // '랭킹' 탭의 경로
         break;
       case "3":
         navigate('/problem'); // '문제' 탭의 경로

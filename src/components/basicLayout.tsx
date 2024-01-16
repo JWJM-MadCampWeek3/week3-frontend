@@ -40,19 +40,27 @@ const BasicLayout: React.FC = () => {
     switch (location.pathname) {
       case "/group":
         return (
-          <Row >
-          <Col span={20} style={{height:50, margin:"auto 0"}}> <GroupHeader /></Col>
-          <Col span={4} style={{height:50, margin:"auto 0", textAlign: "right" }} > <Button onClick={()=>navigate("/group/add")} shape="round" size={'large'}>새로운 그룹들</Button> </Col>
+          <Row>
+            <Col span={20} style={{ height: 50, margin: "auto 0" }}>
+              <GroupHeader />
+            </Col>
+            <Col
+              span={4}
+              style={{ height: 50, margin: "auto 0", textAlign: "right" }}
+            >
+              <Button
+                onClick={() => navigate("/group/add")}
+                shape='round'
+                size={"large"}
+              >
+                새로운 그룹들
+              </Button>
+            </Col>
           </Row>
         );
       case "/rank":
         //TODO 랭킹 설정...
-        return (
-          <Row >
-          <Col span={20} style={{height:50, margin:"auto 0"}}> <RankHeader /></Col>
-          <Col span={4} style={{height:50, margin:"auto 0", textAlign: "right" }} > <Button onClick={()=>console.log("우짜노")} shape="round" size={'large'}>날짜...</Button> </Col>
-          </Row>
-        );
+        return <RankHeader />;
       case "/problem":
         return <></>;
       default:
