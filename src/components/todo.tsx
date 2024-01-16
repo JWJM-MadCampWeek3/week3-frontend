@@ -44,8 +44,6 @@ const ToDo = () => {
       axios
         .post(`${API_URL}/user_Info`, { id: context.user.id })
         .then((response) => {
-          console.log("response", response);
-          console.log("todos", response.data.todo_problems);
           // Assuming the response body has a 'group' field that is an array
           setGroup(response.data.todo_problems);
         })

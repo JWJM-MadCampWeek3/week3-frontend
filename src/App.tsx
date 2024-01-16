@@ -12,9 +12,6 @@ import GroupAddPage from "./page/groupAddPage.tsx";
 import RankPage from "./page/rankPage.tsx";
 import ProblemPage from "./page/problemPage.tsx";
 
-const Rank = () => <div>Rank</div>;
-const Problem = () => <div>Problem</div>;
-
 interface User {
   id: string;
   nickname: string;

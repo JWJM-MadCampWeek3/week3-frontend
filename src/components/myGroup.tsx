@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { UserContext } from "../App.tsx";
 import axios from "axios";
@@ -11,11 +12,19 @@ import { Card } from "antd";
 
 const API_URL = "http://143.248.219.4:8080";
 
-function renderRow(props) {
+function RenderRow(props) {
   const { index, style, data } = props;
-
+  
+  const navigate = useNavigate();
+  
   return (
-    <ListItem style={style} key={index} component='div' disablePadding>
+    <ListItem 
+    onClick={(e) => {navigate(`/group?group_name=${data[index]}`);}}
+      style={style}
+      key={index}
+      component='div'
+      disablePadding
+    >
       <ListItemButton>
         <ListItemText primary={`${data[index]}`} />
       </ListItemButton>
@@ -66,13 +75,13 @@ const MyGroup = () => {
       >
         <FixedSizeList
           height={200}
-          width="100%"
+          width='100%'
           itemSize={46}
           itemCount={group.length}
           overscanCount={5}
-          itemData={group} // pass groups as itemData to renderRow
+          itemData={group} // pass groups as itemData to RenderRow
         >
-          {renderRow}
+          {RenderRow}
         </FixedSizeList>
       </Box>
     </Card>

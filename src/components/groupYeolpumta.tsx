@@ -8,7 +8,7 @@ import { FixedSizeList, ListChildComponentProps } from "react-window";
 import axios from "axios";
 import { Card, Typography } from "antd";
 import { useStopwatch } from "react-timer-hook";
-import { group } from 'console';
+import { group } from "console";
 
 const { Text } = Typography;
 
@@ -23,27 +23,33 @@ function RenderRow(props: ListChildComponentProps & { data: any[] }) {
   // groupInfo.duration을 기반으로 offsetTimestamp 계산
   const offsetTimestamp = React.useMemo(() => {
     const timestamp = new Date();
-    timestamp.setSeconds(timestamp.getSeconds() +  groupInfo.dates[0].duration);
+    timestamp.setSeconds(timestamp.getSeconds() + groupInfo.dates[0].duration);
     return timestamp;
-  }, [ groupInfo.dates[0].duration]);
+  }, [groupInfo.dates[0].duration]);
 
   // reset 함수 호출
   React.useEffect(() => {
-    console.log(groupInfo.id, groupInfo.isStudy)
-    reset(offsetTimestamp, groupInfo.isStudy)
+    reset(offsetTimestamp, groupInfo.isStudy);
   }, [groupInfo.isStudy]);
 
   return (
-    <ListItem style={style} key={index} component="div" disablePadding>
+    <ListItem style={style} key={index} component='div' disablePadding>
       <ListItemButton>
         <ListItemText
+          style={{ color: groupInfo.isStudy ? "black" : "#61616" }}
           primary={groupInfo.nickname}
           secondary={
             <React.Fragment>
               <Text
-                style={{ textAlign: "center", width: "100%", marginTop: 0 }}
+                style={{
+                  textAlign: "center",
+                  width: "100%",
+                  marginTop: 0,
+                }}
               >
-                {hours}시간 {minutes}분 {seconds}초
+                {groupInfo.isStudy
+                  ? "지금 공부 중 🔥🔥"
+                  : "지금은 쉬는 중 💤💤"}
               </Text>
             </React.Fragment>
           }
@@ -54,7 +60,6 @@ function RenderRow(props: ListChildComponentProps & { data: any[] }) {
 }
 
 const GroupYeolpumta = () => {
-
   const [groupMembers, setGroupMembers] = React.useState<string[]>([]);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -86,7 +91,7 @@ const GroupYeolpumta = () => {
     sendPostRequest(); // 처음 데이터 로딩 후 한 번 실행
 
     // 10초마다 데이터 업데이트
-    const timer = setInterval(sendPostRequest, 10000);
+    const timer = setInterval(sendPostRequest, 60000);
 
     return () => {
       clearInterval(timer); // 컴포넌트가 언마운트될 때 타이머 해제
@@ -115,22 +120,15 @@ const GroupYeolpumta = () => {
 
   return (
     <Card title={"오늘 공부한 사람들"}>
-      <Box
-        sx={{
-          height: 250,
-          bgcolor: "background.paper",
-        }}
+      <FixedSizeList
+        height={200}
+        width='100%'
+        itemSize={60}
+        itemCount={groupInfos.length}
+        overscanCount={5}
       >
-        <FixedSizeList
-          height={250}
-          width="100%"
-          itemSize={46}
-          itemCount={groupInfos.length}
-          overscanCount={5}
-        >
-          {(props) => <RenderRow {...props} data={groupInfos} />}
-        </FixedSizeList>
-      </Box>
+        {(props) => <RenderRow {...props} data={groupInfos} />}
+      </FixedSizeList>
     </Card>
   );
 };

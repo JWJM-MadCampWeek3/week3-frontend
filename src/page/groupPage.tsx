@@ -3,10 +3,10 @@ import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button, Flex, Card, Row, Col, Space } from "antd";
 import { UserContext } from "../App.tsx";
-import io from "socket.io-client";
 import GroupYeolpumta from "../components/groupYeolpumta.tsx";
 import GroupMembers from "../components/groupMembers.tsx";
 import { Typography } from "antd";
+import GroupProblem from '../components/groupProblem.tsx';
 
 const { Title, Text } = Typography;
 
@@ -78,7 +78,7 @@ const GroupPage = () => {
       .then((response) => {
         setGroup({
           group_name: response.data.group_name,
-          bio: response.data.bio,
+          bio: response.data.group_bio,
           problems: response.data.problems,
           tier: response.data.tier,
           goal_time: response.data.goal_time,
@@ -109,7 +109,8 @@ const GroupPage = () => {
                   bordered={false}
                   style={{ width: "97%", margin: "10px auto 20px 0" }}
                 >
-                  <Text strong>그룹 소개 </Text> <p>{group?.bio}</p>
+                  <Flex vertical>
+                    <Text strong>{group?.bio}</Text>
                   <Space>
                     <Text strong>티어 제한 </Text>
                     {group ? tier_list[group.tier] : null}
@@ -120,6 +121,8 @@ const GroupPage = () => {
                     {group ? tier_list[group.goal_number] : null}
                     <Text strong> 문제 </Text>
                   </Space>
+                  </Flex>
+                  
                 </Card>
               </Col>
               <Col span={24}>
@@ -127,7 +130,7 @@ const GroupPage = () => {
                   title={`${group_name} 그룹이 풀 문제들`}
                   style={{ width: "97%", margin: "10px auto 20px 0" }}
                 >
-                  <p>{group?.problems}</p>
+                  <GroupProblem/>
                 </Card>
               </Col>
             </Col>

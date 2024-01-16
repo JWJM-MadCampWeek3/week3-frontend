@@ -60,13 +60,13 @@ const GroupMembers = () => {
       <Box
         sx={{
           width: "100%",
-          height: 210,
+          height: 310,
           margin: "0 auto",
           bgcolor: "background.paper",
         }}
       >
         <FixedSizeList
-          height={210}
+          height={310}
           width='100%'
           itemSize={46}
           itemCount={groupMembers.length}
