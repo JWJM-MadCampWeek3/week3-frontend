@@ -104,6 +104,7 @@ const RankHeader = () => {
               }}
               shape='round'
               size={"large"}
+              type="primary"
             >
               한달 랭킹
             </Button>
@@ -115,6 +116,7 @@ const RankHeader = () => {
               }}
               shape='round'
               size={"large"}
+              type="primary"
             >
               하루 랭킹
             </Button>

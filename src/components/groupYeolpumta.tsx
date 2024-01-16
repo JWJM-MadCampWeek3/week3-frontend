@@ -6,7 +6,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
 import axios from "axios";
-import { Card, Typography } from "antd";
+import { Card, Typography, Flex } from "antd";
 import { useStopwatch } from "react-timer-hook";
 import { group } from "console";
 
@@ -39,12 +39,15 @@ function RenderRow(props: ListChildComponentProps & { data: any[] }) {
           style={{ color: groupInfo.isStudy ? "black" : "#757575" }}
           primary={groupInfo.nickname}
         />
-        <ListItemText
+        
+        <Flex justify="flex-end">
+          <ListItemText
           style={{ color: groupInfo.isStudy ? "black" : "#757575" }}
           primary={
             groupInfo.isStudy ? "공부 중 🔥🔥" : "지금은 쉬는 중 ... 💤💤"
           }
         />
+        </Flex>
       </ListItemButton>
     </ListItem>
   );

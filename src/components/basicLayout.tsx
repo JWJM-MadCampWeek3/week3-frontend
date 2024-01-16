@@ -52,6 +52,7 @@ const BasicLayout: React.FC = () => {
                 onClick={() => navigate("/group/add")}
                 shape='round'
                 size={"large"}
+                type="primary"
               >
                 새로운 그룹들
               </Button>
