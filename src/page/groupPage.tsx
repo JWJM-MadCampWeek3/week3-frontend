@@ -1,16 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Button, Flex, Card, Row, Col } from "antd";
+import { Button, Flex, Card, Row, Col, Space } from "antd";
 import { UserContext } from "../App.tsx";
 import io from "socket.io-client";
 import GroupYeolpumta from "../components/groupYeolpumta.tsx";
 import GroupMembers from "../components/groupMembers.tsx";
+import { Typography } from "antd";
+
+const { Title, Text } = Typography;
 
 const API_URL = "http://143.248.219.4:8080";
 
 const tier_list = [
-  "티어 없음",
+  "제한 없음",
   "Bronze V",
   "Bronze IV",
   "Bronze III",
@@ -49,6 +52,8 @@ interface Group {
   bio: string;
   problems: string[];
   tier: number;
+  goal_time: number;
+  goal_number: number;
 }
 
 const GroupPage = () => {
@@ -76,6 +81,8 @@ const GroupPage = () => {
           bio: response.data.bio,
           problems: response.data.problems,
           tier: response.data.tier,
+          goal_time: response.data.goal_time,
+          goal_number: response.data.goal_number,
         });
       })
       .catch((error) => {
@@ -93,7 +100,7 @@ const GroupPage = () => {
   return (
     <div className={"group-page"}>
       <Flex gap='middle' vertical align='center'>
-        <Col span={24} style={{width:"100%"}}>
+        <Col span={24} style={{ width: "100%" }}>
           <Row justify='center'>
             <Col span={18}>
               <Col span={24}>
@@ -102,13 +109,22 @@ const GroupPage = () => {
                   bordered={false}
                   style={{ width: "97%", margin: "10px auto 20px 0" }}
                 >
-                  <p>{group?.bio}</p>
-                  {group ? tier_list[group.tier] : null}
+                  <Text strong>그룹 소개 </Text> <p>{group?.bio}</p>
+                  <Space>
+                    <Text strong>티어 제한 </Text>
+                    {group ? tier_list[group.tier] : null}
+                    <Text strong> / 목표 시간 </Text>
+                    {group ? tier_list[group.goal_time] : null}
+                    <Text strong> 시간 </Text>
+                    <Text strong> / 목표 문제수 </Text>
+                    {group ? tier_list[group.goal_number] : null}
+                    <Text strong> 문제 </Text>
+                  </Space>
                 </Card>
               </Col>
               <Col span={24}>
                 <Card
-                  title={`${group_name}이 풀 문제들`}
+                  title={`${group_name} 그룹이 풀 문제들`}
                   style={{ width: "97%", margin: "10px auto 20px 0" }}
                 >
                   <p>{group?.problems}</p>

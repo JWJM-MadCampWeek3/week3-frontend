@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, Card } from "antd";
 import { UserContext } from "../App.tsx";
-import { connectToSocket, joinRoom, test } from "./socketService.tsx";
 
 import { Alert } from "antd";
 
@@ -50,9 +49,6 @@ const LoginPage: React.FC = () => {
         // Session Storage에 사용자 정보 저장
         sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
         // 상태 업데이트;
-        connectToSocket();
-        joinRoom();
-        test();
         setUser(userInfo);
         setIs_fail(false);
         navigate("/group?group_name=default");
