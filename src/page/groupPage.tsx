@@ -7,8 +7,8 @@ import GroupYeolpumta from "../components/groupYeolpumta.tsx";
 import GroupMembers from "../components/groupMembers.tsx";
 import { Typography } from "antd";
 import GroupProblem from "../components/groupProblem.tsx";
-import TimerIcon from '@mui/icons-material/Timer';
-import RuleIcon from '@mui/icons-material/Rule';
+import TimerIcon from "@mui/icons-material/Timer";
+import RuleIcon from "@mui/icons-material/Rule";
 const { Title, Text } = Typography;
 
 const API_URL = "http://143.248.219.4:8080";
@@ -112,18 +112,16 @@ const GroupPage = () => {
                 >
                   <Flex vertical>
                     <Text strong>{group?.bio}</Text>
-                    <Space>
-                      <img
-                        width={14}
-                        height={18}
-                        src={"./images/tier.png"}
-                      />
-                      {group ? tier_list[group.tier] : null}
-                      <TimerIcon/>
-                      {group ? tier_list[group.goal_time] : null}
-                      <RuleIcon/>
-                      {group ? tier_list[group.goal_number] : null}
-                    </Space>
+                    <Flex justify='flex-end' align='center'>
+                      <Space>
+                        <img width={16} height={20} src={"./images/tier.png"} />
+                        {group ? tier_list[group.tier] : null}
+                        <TimerIcon />
+                        {group ? tier_list[group.goal_time] : null}
+                        <RuleIcon />
+                        {group ? tier_list[group.goal_number] : null}
+                      </Space>
+                    </Flex>
                   </Flex>
                 </Card>
               </Col>
