@@ -8,9 +8,9 @@ const StyledTabs = styled(Tabs)`
     margin: 0;
   }
   .ant-tabs-tab {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: bold;
-    padding: 10px 50px;
+    padding: 10px 20px;
   }
 `;
 

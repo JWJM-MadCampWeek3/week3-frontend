@@ -44,7 +44,8 @@ const ToDo = () => {
       axios
         .post(`${API_URL}/user_Info`, { id: context.user.id })
         .then((response) => {
-          console.log(response.data.todo_problems)
+          console.log("response", response);
+          console.log("todos", response.data.todo_problems);
           // Assuming the response body has a 'group' field that is an array
           setGroup(response.data.todo_problems);
         })
@@ -63,13 +64,13 @@ const ToDo = () => {
     const { index, style, data } = props;
 
     return (
-      <ListItem style={style} key={index} component='div' disablePadding>
+      <ListItem style={style} key={index} component='div' disablePadding 
+      onClick={() => handleToggle(index)}>
+        <Checkbox
+          edge='end'
+          checked={checked.indexOf(index) !== -1}
+        />
         <ListItemButton>
-          <Checkbox
-            edge='end'
-            onChange={() => handleToggle(index)}
-            checked={checked.indexOf(index) !== -1}
-          />
           <ListItemText primary={`${data[index]}`} />
         </ListItemButton>
       </ListItem>

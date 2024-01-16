@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, Card } from "antd";
 import { UserContext } from "../App.tsx";
-import { useWebSocket } from "./websocket.tsx";
+import { connectToSocket, joinRoom, test } from "./socketService.tsx";
 
 import { Alert } from "antd";
 
@@ -20,7 +20,6 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const context = useContext(UserContext);
   
-  const { setSocket } = useWebSocket();
   // 조건부 렌더링을 여기서 수행
   if (!context) {
     return <div>로딩 중...</div>;
@@ -50,10 +49,10 @@ const LoginPage: React.FC = () => {
         };
         // Session Storage에 사용자 정보 저장
         sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
-        // 상태 업데이트
-        const newSocket = new WebSocket(`ws://143.248.219.4:8080/ws/${context?.user.id}`);
-        setSocket(newSocket);
-
+        // 상태 업데이트;
+        connectToSocket();
+        joinRoom();
+        test();
         setUser(userInfo);
         setIs_fail(false);
         navigate("/group?group_name=default");

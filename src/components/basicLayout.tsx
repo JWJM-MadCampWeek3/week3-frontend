@@ -4,14 +4,15 @@ import {
   NotificationOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme, Typography, Card } from "antd";
+import { Layout, Menu, theme, Typography, Card, Row, Col, Button } from "antd";
 import Header from "./header.tsx";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import StopWatch from "./stopwatch.tsx";
 import styled from "styled-components";
 import Profile from "./profile.tsx";
 import MyGroup from "./myGroup.tsx";
 import ToDo from "./todo.tsx";
+import GroupHeader from "./group_header.tsx";
 
 const { Title } = Typography;
 const { Content, Sider } = Layout;
@@ -27,6 +28,7 @@ const StyledCard = styled(Card)`
 `;
 
 const BasicLayout: React.FC = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -36,13 +38,24 @@ const BasicLayout: React.FC = () => {
   const renderHeaderContent = () => {
     switch (location.pathname) {
       case "/group":
-        return <div>Header Content for group</div>;
+        return (
+          <Row >
+          <Col span={20} style={{height:40, margin:"auto 0"}}> <GroupHeader /></Col>
+          <Col span={4} style={{height:40, margin:"auto 0", textAlign: "right" }} > <Button onClick={()=>navigate("/group/add")}>새로운 그룹들</Button> </Col>
+          </Row>
+        );
       case "/rank":
-        return <div>Header Content for Route 2</div>;
+        //TODO 랭킹 설정...
+        return (
+          <Row >
+          <Col span={20} style={{height:40, margin:"auto 0"}}> <Button>개인/그룹</Button></Col>
+          <Col span={4} style={{height:40, margin:"auto 0", textAlign: "right" }} > <Button onClick={()=>navigate("/group/add")}>날짜...</Button> </Col>
+          </Row>
+        );
       case "/problem":
-        return <div>Header Content for Route 2</div>;
+        return <></>;
       default:
-        return <div>Default Header Content</div>;
+        return <></>;
     }
   };
 
@@ -102,7 +115,7 @@ const BasicLayout: React.FC = () => {
           </Menu>
         </Sider>
         <Layout style={{ padding: "12px 12px 12px" }}>
-        {renderHeaderContent()} 
+          {renderHeaderContent()}
           <Content
             style={{
               padding: 24,

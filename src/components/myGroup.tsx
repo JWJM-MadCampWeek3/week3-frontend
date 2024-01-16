@@ -42,7 +42,6 @@ const MyGroup = () => {
         .post(`${API_URL}/user_Info`, { id: context.user.id })
         .then((response) => {
           // Assuming the response body has a 'group' field that is an array
-          console.log(response.data.group)
           setGroup(response.data.group);
         })
         .catch((error) => {
