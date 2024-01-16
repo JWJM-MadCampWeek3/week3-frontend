@@ -38,20 +38,11 @@ function RenderRow(props: ListChildComponentProps & { data: any[] }) {
         <ListItemText
           style={{ color: groupInfo.isStudy ? "black" : "#61616" }}
           primary={groupInfo.nickname}
-          secondary={
-            <React.Fragment>
-              <Text
-                style={{
-                  textAlign: "center",
-                  width: "100%",
-                  marginTop: 0,
-                }}
-              >
-                {groupInfo.isStudy
-                  ? "지금 공부 중 🔥🔥"
-                  : "지금은 쉬는 중 💤💤"}
-              </Text>
-            </React.Fragment>
+        />
+        <ListItemText
+          style={{ color: groupInfo.isStudy ? "black" : "#61616" }}
+          primary={
+            groupInfo.isStudy ? "공부 중 🔥🔥" : "지금은 쉬는 중 ... 💤💤"
           }
         />
       </ListItemButton>
@@ -121,7 +112,7 @@ const GroupYeolpumta = () => {
   return (
     <Card title={"오늘 공부한 사람들"}>
       <FixedSizeList
-        height={200}
+        height={190}
         width='100%'
         itemSize={60}
         itemCount={groupInfos.length}

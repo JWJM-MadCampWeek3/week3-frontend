@@ -107,7 +107,7 @@ const GroupPage = () => {
                 <Card
                   title={group_name}
                   bordered={false}
-                  style={{ width: "97%", margin: "10px auto 20px 0" }}
+                  style={{ width: "97%", margin: "5px auto 10px 0" }}
                 >
                   <Flex vertical>
                     <Text strong>{group?.bio}</Text>
@@ -128,7 +128,7 @@ const GroupPage = () => {
               <Col span={24}>
                 <Card
                   title={`${group_name} 그룹이 풀 문제들`}
-                  style={{ width: "97%", margin: "10px auto 20px 0" }}
+                  style={{ width: "97%", margin: "5px auto 10px 0" }}
                 >
                   <GroupProblem/>
                 </Card>

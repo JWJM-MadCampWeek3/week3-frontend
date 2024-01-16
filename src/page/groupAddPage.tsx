@@ -41,24 +41,7 @@ function renderRow(props) {
 }
 
 const GroupAddPage: React.FC = () => {
-  const [group, setGroup] = useState([
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15",
-    "16",
-  ]);
+  const [group, setGroup] = useState([]);
 
   useEffect(() => {
     //TODO : 그룹 전부 가져오기
@@ -72,16 +55,16 @@ const GroupAddPage: React.FC = () => {
     <>
       <Search
         size='large'
-        placeholder='input search text'
+        placeholder='그룹 이름을 입력해주세요.'
         onSearch={onSearch}
         enterButton
       />
       <Row align="middle">
-        <Col span={22}>
+        <Col span={20}>
           <Title level={3}>그룹 목록</Title>
         </Col>
-        <Col span={2} >
-          <Button onClick={makeRoom}>만들기</Button>
+        <Col span={4} style={{height:50, margin:"auto 0", textAlign: "right" }}>
+          <Button onClick={makeRoom} shape="round" size={'large'}>그룹 만들기</Button>
         </Col>
       </Row>
       <Card>

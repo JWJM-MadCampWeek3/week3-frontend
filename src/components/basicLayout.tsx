@@ -13,6 +13,7 @@ import Profile from "./profile.tsx";
 import MyGroup from "./myGroup.tsx";
 import ToDo from "./todo.tsx";
 import GroupHeader from "./group_header.tsx";
+import RankHeader from "./rank_header.tsx";
 
 const { Title } = Typography;
 const { Content, Sider } = Layout;
@@ -40,16 +41,16 @@ const BasicLayout: React.FC = () => {
       case "/group":
         return (
           <Row >
-          <Col span={20} style={{height:40, margin:"auto 0"}}> <GroupHeader /></Col>
-          <Col span={4} style={{height:40, margin:"auto 0", textAlign: "right" }} > <Button onClick={()=>navigate("/group/add")}>새로운 그룹들</Button> </Col>
+          <Col span={20} style={{height:50, margin:"auto 0"}}> <GroupHeader /></Col>
+          <Col span={4} style={{height:50, margin:"auto 0", textAlign: "right" }} > <Button onClick={()=>navigate("/group/add")} shape="round" size={'large'}>새로운 그룹들</Button> </Col>
           </Row>
         );
       case "/rank":
         //TODO 랭킹 설정...
         return (
           <Row >
-          <Col span={20} style={{height:40, margin:"auto 0"}}> <Button>개인/그룹</Button></Col>
-          <Col span={4} style={{height:40, margin:"auto 0", textAlign: "right" }} > <Button onClick={()=>navigate("/group/add")}>날짜...</Button> </Col>
+          <Col span={20} style={{height:50, margin:"auto 0"}}> <RankHeader /></Col>
+          <Col span={4} style={{height:50, margin:"auto 0", textAlign: "right" }} > <Button onClick={()=>console.log("우짜노")} shape="round" size={'large'}>날짜...</Button> </Col>
           </Row>
         );
       case "/problem":
@@ -82,7 +83,7 @@ const BasicLayout: React.FC = () => {
           <Menu
             mode='inline'
             defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub3", "sub4"]}
+            defaultOpenKeys={["sub2", "sub3"]}
           >
             <Menu.SubMenu key='sub1' icon={<UserOutlined />} title='나의 정보'>
               <Profile />

@@ -1,71 +1,226 @@
-import React, { useEffect, useState } from "react";
-import { AudioOutlined } from "@ant-design/icons";
-import { Input, Space, Card } from "antd";
-import type { SearchProps } from "antd/es/input/Search";
-import Box from "@mui/material/Box";
-import {Button, Typography} from "antd";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import { FixedSizeList } from "react-window";
+import React, { useRef, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import axios from "axios";
+import { SearchOutlined } from "@ant-design/icons";
+import type { GetRef, TableColumnsType, TableColumnType } from "antd";
+import { Button, Input, Space, Table } from "antd";
+import type { FilterDropdownProps } from "antd/es/table/interface";
+import Highlighter from "react-highlight-words";
 
-const { Search } = Input;
+type InputRef = GetRef<typeof Input>;
 
-const { Title } = Typography;
+type DataIndex = keyof DataType;
 
-function renderRow(props) {
-  const { index, style, data } = props;
+const API_URL = "http://143.248.219.4:8080";
 
-  const joinGroup = () => {
-    // TODO : 그룹 들어가기
-  }
-  
-  // TODO 온갖...버튼들... ㅋㅋ
-  // TODO 그룹 정보? 수정하기
-  return (
-    <ListItem style={style} key={index} component='div' disablePadding>
-      <ListItemButton>
-        <ListItemText primary={`이름`} />
-        <ListItemText primary={`총 공부량`} />
-      </ListItemButton>
-    </ListItem>
-  );
+interface DataType {
+  key: React.Key;
+  nickname: string;
+  bj_id: string;
+  duration: number;
+  solvedCount: string;
+  rank: number;
 }
 
-
 const RankPage: React.FC = () => {
-  const [group, setGroup] = 
-  useState(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12","13","14","15","16"]);
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: FilterDropdownProps["confirm"],
+    dataIndex: DataIndex
+  ) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    setSearchText("");
+  };
+
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): TableColumnType<DataType> => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            handleSearch(selectedKeys as string[], confirm, dataIndex)
+          }
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space>
+          <Button
+            type='primary'
+            onClick={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
+            icon={<SearchOutlined />}
+            size='small'
+            style={{ width: 90 }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size='small'
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+          <Button
+            type='link'
+            size='small'
+            onClick={() => {
+              confirm({ closeDropdown: false });
+              setSearchText((selectedKeys as string[])[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type='link'
+            size='small'
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes((value as string).toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  const columns: TableColumnsType<DataType> = [
+    {
+      title: "이름",
+      dataIndex: "nickname",
+      width: "30%",
+      ...getColumnSearchProps("nickname"),
+    },
+    {
+      title: "백준 아이디",
+      dataIndex: "bj_id",
+      width: "30%",
+      ...getColumnSearchProps("bj_id"),
+    },
+    {
+      title: "공부시간",
+      dataIndex: "duration",
+      width: "15%",
+    },
+    {
+      title: "푼 문제 수",
+      dataIndex: "solvedCount",
+      width: "15%",
+    },
+    {
+      title: "순위",
+      dataIndex: "rank",
+      width: "10%",
+    },
+  ];
+  const [rankers, setRankers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
+
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef<InputRef>(null);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const group_name = searchParams.get("group_name");
 
   useEffect(() => {
-    //TODO : 그룹 전부 가져오기
-  }, []);
+    loadRankers(currentPage); // 페이지가 변경될 때 랭킹 데이터 로드
 
-  //근데 이거 서치바 좀 이상한데...ㅋㅋ 임티가 이상하다;;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [group_name, currentPage]);
+
+  const loadRankers = (page) => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+  
+    const year = yesterday.getFullYear();
+    const month = String(yesterday.getMonth() + 1).padStart(2, "0");
+    const day = String(yesterday.getDate()).padStart(2, "0");
+  
+    const yesterdayDateString = `${year}-${month}-${day}`;
+
+    console.log(currentPage);
+    axios
+      .post(`${API_URL}/rank/individual_day`, {
+        group_name: group_name,
+        date: "2024-01-16",
+      })
+      .then((response) => {
+        const rankersData = response.data;
+        const updatedRankers = rankersData.map((ranker, index) => ({
+          ...ranker,
+          rank: index + 1, // 순위 계산
+          key: ranker.id, // 고유한 key 값을 설정
+        }));
+        console.log(updatedRankers);
+        setRankers(updatedRankers);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // 페이지 변경 이벤트 처리 함수
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
-    <>
-      <Title level={3}>순위</Title>
-      <Card >
-        <Box
-          sx={{
-            width: "100%",
-            height: "100%",
-            bgcolor: "background.paper",
-          }}
-        >
-          <FixedSizeList
-            height= {600}
-            width='100%'
-            itemSize={46}
-            itemCount={group.length}
-            overscanCount={5}
-            itemData={group} // pass groups as itemData to renderRow
-          >
-            {renderRow}
-          </FixedSizeList>
-        </Box>
-      </Card>
-    </>
+    <Table
+      columns={columns}
+      dataSource={rankers}
+      pagination={{
+        pageSize: 10,
+        onChange: handlePageChange, // 페이지 변경 이벤트 처리
+      }}
+      style={{ width: "100%", margin: "10px auto 20px 0" }}
+    />
   );
 };
 

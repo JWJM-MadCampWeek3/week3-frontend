@@ -65,7 +65,7 @@ const GroupHeader = () => {
 
   return (
     <Dropdown menu={{ items }} placement='bottomLeft'>
-      <Button>
+      <Button shape="round" size={'large'}>
         {group_name}
         <DownOutlined />
       </Button>
