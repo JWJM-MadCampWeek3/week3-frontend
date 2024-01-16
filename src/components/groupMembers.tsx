@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useSearchParams } from "react-router-dom";
-import {Card} from "antd";
+import { Card } from "antd";
 import Box from "@mui/material/Box";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -56,7 +56,10 @@ const GroupMembers = () => {
   }, []);
 
   return (
-    <Card title={"그룹원 목록"} style={{ width: "100%", margin: "10px auto 20px 0" }}>
+    <Card
+      title={"그룹원 목록"}
+      style={{ width: "100%", margin: "10px auto 20px 0" }}
+    >
       <Box
         sx={{
           width: "100%",

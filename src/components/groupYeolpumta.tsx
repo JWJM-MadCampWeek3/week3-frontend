@@ -36,11 +36,11 @@ function RenderRow(props: ListChildComponentProps & { data: any[] }) {
     <ListItem style={style} key={index} component='div' disablePadding>
       <ListItemButton>
         <ListItemText
-          style={{ color: groupInfo.isStudy ? "black" : "#61616" }}
+          style={{ color: groupInfo.isStudy ? "black" : "#757575" }}
           primary={groupInfo.nickname}
         />
         <ListItemText
-          style={{ color: groupInfo.isStudy ? "black" : "#61616" }}
+          style={{ color: groupInfo.isStudy ? "black" : "#757575" }}
           primary={
             groupInfo.isStudy ? "공부 중 🔥🔥" : "지금은 쉬는 중 ... 💤💤"
           }
@@ -82,7 +82,7 @@ const GroupYeolpumta = () => {
     sendPostRequest(); // 처음 데이터 로딩 후 한 번 실행
 
     // 10초마다 데이터 업데이트
-    const timer = setInterval(sendPostRequest, 60000);
+    const timer = setInterval(sendPostRequest, 10000);
 
     return () => {
       clearInterval(timer); // 컴포넌트가 언마운트될 때 타이머 해제

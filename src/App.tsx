@@ -20,6 +20,8 @@ interface User {
   image: string;
   bio: string;
   group: string[];
+  problems: string[];
+  todo_problems: string[]
 }
 
 interface UserContextType {
@@ -38,6 +40,8 @@ const App = () => {
     image: "./images/user.png",
     bio: "테스트입니다.",
     group: ["default"],
+    problems:["로딩중"],
+    todo_problems: ["로딩중"]
   });
 
   return (

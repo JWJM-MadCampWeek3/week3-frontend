@@ -3,7 +3,7 @@ import { useStopwatch } from "react-timer-hook";
 import { Button, Card, Flex, Typography } from "antd";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseOutlinedIcon from "@mui/icons-material/PauseOutlined";
-import axios from 'axios';
+import axios from "axios";
 import { UserContext } from "../App.tsx";
 const { Text, Title } = Typography;
 
@@ -63,9 +63,8 @@ const MyStopwatch = () => {
     }
   }, [hours, minutes, seconds]);
 
-
   const context = useContext(UserContext);
-  
+
   // 조건부 렌더링을 여기서 수행
   if (!context) {
     return <div>로딩 중...</div>;
@@ -82,8 +81,8 @@ const MyStopwatch = () => {
 
     const formattedDate = `${year}-${month}-${day}`;
 
-    axios.post(`${API_URL}/start`,{
-      id:user.id,
+    axios.post(`${API_URL}/start`, {
+      id: user.id,
       date: formattedDate,
     });
 
@@ -96,7 +95,7 @@ const MyStopwatch = () => {
     };
     setIsRunning_(true);
     localStorage.setItem("stopwatchInfo", JSON.stringify(stopwatchInfo));
-  }
+  };
 
   const onPause = () => {
     const today = new Date();
@@ -112,8 +111,8 @@ const MyStopwatch = () => {
       seconds: seconds,
       isRunning: false,
     };
-    console.log(user.id)
-    axios.post(`${API_URL}/stop`,{
+    console.log(user.id);
+    axios.post(`${API_URL}/stop`, {
       id: user.id,
       date: formattedDate,
     });

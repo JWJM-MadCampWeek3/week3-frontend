@@ -14,12 +14,14 @@ const API_URL = "http://143.248.219.4:8080";
 
 function RenderRow(props) {
   const { index, style, data } = props;
-  
+
   const navigate = useNavigate();
-  
+
   return (
-    <ListItem 
-    onClick={(e) => {navigate(`/group?group_name=${data[index]}`);}}
+    <ListItem
+      onClick={(e) => {
+        navigate(`/group?group_name=${data[index]}`);
+      }}
       style={style}
       key={index}
       component='div'

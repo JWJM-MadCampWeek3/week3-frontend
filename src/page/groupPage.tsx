@@ -6,8 +6,9 @@ import { UserContext } from "../App.tsx";
 import GroupYeolpumta from "../components/groupYeolpumta.tsx";
 import GroupMembers from "../components/groupMembers.tsx";
 import { Typography } from "antd";
-import GroupProblem from '../components/groupProblem.tsx';
-
+import GroupProblem from "../components/groupProblem.tsx";
+import TimerIcon from '@mui/icons-material/Timer';
+import RuleIcon from '@mui/icons-material/Rule';
 const { Title, Text } = Typography;
 
 const API_URL = "http://143.248.219.4:8080";
@@ -111,18 +112,19 @@ const GroupPage = () => {
                 >
                   <Flex vertical>
                     <Text strong>{group?.bio}</Text>
-                  <Space>
-                    <Text strong>티어 제한 </Text>
-                    {group ? tier_list[group.tier] : null}
-                    <Text strong> / 목표 시간 </Text>
-                    {group ? tier_list[group.goal_time] : null}
-                    <Text strong> 시간 </Text>
-                    <Text strong> / 목표 문제수 </Text>
-                    {group ? tier_list[group.goal_number] : null}
-                    <Text strong> 문제 </Text>
-                  </Space>
+                    <Space>
+                      <img
+                        width={14}
+                        height={18}
+                        src={"./images/tier.png"}
+                      />
+                      {group ? tier_list[group.tier] : null}
+                      <TimerIcon/>
+                      {group ? tier_list[group.goal_time] : null}
+                      <RuleIcon/>
+                      {group ? tier_list[group.goal_number] : null}
+                    </Space>
                   </Flex>
-                  
                 </Card>
               </Col>
               <Col span={24}>
@@ -130,7 +132,7 @@ const GroupPage = () => {
                   title={`${group_name} 그룹이 풀 문제들`}
                   style={{ width: "97%", margin: "5px auto 10px 0" }}
                 >
-                  <GroupProblem/>
+                  <GroupProblem />
                 </Card>
               </Col>
             </Col>

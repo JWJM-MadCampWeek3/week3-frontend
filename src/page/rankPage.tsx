@@ -10,7 +10,7 @@ import Highlighter from "react-highlight-words";
 import type { DatePickerProps } from "antd";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
-import NumCalculator from 'antd/es/theme/util/calc/NumCalculator';
+import NumCalculator from "antd/es/theme/util/calc/NumCalculator";
 
 const { Text, Title } = Typography;
 
@@ -278,9 +278,9 @@ const RankPage: React.FC = () => {
 
   const onDateChange: DatePickerProps["onChange"] = (date, dateString) => {
     console.log(date, dateString);
-    if(date===null){
+    if (date === null) {
       setDate("");
-    }else{
+    } else {
       setDate(dateString);
     }
   };
@@ -288,9 +288,9 @@ const RankPage: React.FC = () => {
   const onMonthChange: DatePickerProps["onChange"] = (date, dateString) => {
     console.log("???", dateString);
     console.log(date, dateString);
-    if(date===null){
+    if (date === null) {
       setMonth("");
-    }else{
+    } else {
       setMonth(dateString);
     }
   };

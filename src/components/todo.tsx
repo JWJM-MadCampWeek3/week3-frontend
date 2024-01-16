@@ -62,12 +62,14 @@ const ToDo = () => {
     const { index, style, data } = props;
 
     return (
-      <ListItem style={style} key={index} component='div' disablePadding 
-      onClick={() => handleToggle(index)}>
-        <Checkbox
-          edge='end'
-          checked={checked.indexOf(index) !== -1}
-        />
+      <ListItem
+        style={style}
+        key={index}
+        component='div'
+        disablePadding
+        onClick={() => handleToggle(index)}
+      >
+        <Checkbox edge='end' checked={checked.indexOf(index) !== -1} />
         <ListItemButton>
           <ListItemText primary={`${data[index]}`} />
         </ListItemButton>
