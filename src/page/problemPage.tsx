@@ -242,6 +242,20 @@ const ProblemPage: React.FC = () => {
     }));
   };
 
+  const onTodayAdd = (problem_id)=>{
+    axios
+    .post(`${API_URL}/user/todoproblem/insert`, {
+      id: user.id,
+      problem: problem_id.toString(),
+    })
+    .then((response) => {
+      console.log("response", response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
   const columns: TableColumnsType<DataType> = [
     {
       title: "문제 번호",
@@ -266,7 +280,23 @@ const ProblemPage: React.FC = () => {
       width: "20%",
     },
     {
-      title: "문제 추가",
+      title: "오늘 풀 문제에",
+      dataIndex: "problem_algorithm",
+      width: "20%",
+      render: (text, record) => {
+        return (
+          <Button
+            onClick={() => onTodayAdd(record.problem_id)}
+            shape='round'
+            size={"large"}
+          >
+            추가
+          </Button>
+        );
+      },
+    },
+    {
+      title: "그룹에",
       key: "action",
       width: "5%",
       render: (text, record) => {
@@ -281,12 +311,16 @@ const ProblemPage: React.FC = () => {
         }));
         return (
           <>
-            <Button onClick={() => onButtonClick(record.problem_id)}>
-              클릭
+            <Button
+              onClick={() => onButtonClick(record.problem_id)}
+              shape='round'
+              size={"large"}
+            >
+              추가
             </Button>
             <Modal
               open={open}
-              title='문제 그룹에 추가하기'
+              title='그룹에 문제 추가'
               onOk={() => onOK(record.problem_id)}
               onCancel={handleCancel}
               footer={(_, { OkBtn, CancelBtn }) => (
