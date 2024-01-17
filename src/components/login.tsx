@@ -2,7 +2,7 @@ import React, { useContext, createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input, Card } from "antd";
+import { Button, Checkbox, Form, Input, Card, Space, Flex } from "antd";
 import { UserContext } from "../App.tsx";
 
 import { Alert } from "antd";
@@ -94,6 +94,12 @@ const LoginPage: React.FC = () => {
 
         <Form.Item>
           <Button
+            style={{
+              width: "100%",
+              height: "100%",
+              fontSize: "15px",
+              fontWeight: "bold",
+            }}
             type='primary'
             htmlType='submit'
             className='login-form-button'
@@ -101,10 +107,14 @@ const LoginPage: React.FC = () => {
           >
             로그인
           </Button>
-          계정이 없으신가요?{" "}
-          <Button type='link' onClick={() => navigate("/signup")}>
-            계정 만들기
-          </Button>
+          <Flex justify='flex-end' align='center'
+          style={{marginTop: 10}}>
+            아직 계정이 없으신가요?
+            <Button type='link' onClick={() => navigate("/signup")}>
+              계정 만들기
+            </Button>
+          </Flex>
+          
         </Form.Item>
       </Form>
     </Card>

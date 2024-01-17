@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Button, Flex } from "antd";
+import { Button, Flex, Space } from "antd";
 
 const IntroPage = () => {
   const API_URL = "http://143.248.219.4:8080";
@@ -13,29 +13,40 @@ const IntroPage = () => {
     navigate("/login");
   };
 
+  const backgroundStyle = {
+    backgroundImage: `url(./images/background_intro.png)`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    height: "100vh", // 전체 높이
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "end",
+  };
+
   return (
-    <div className={"intro"}>
-      <div className={"intro_title"}>알고리즘</div>
-      <div className={"intro_subtitle"}>
-        우리는 알고리즘 스터디입니다 사이트 설명입니다. 대충 개 짱 쩐다는
-        이야기... 인트로 멘트 어쩌구 저쩌구구
+    <div style={backgroundStyle}>
+      <div style={{marginRight: '10%', marginBottom: "5%"}}>
+        <Space>
+          <Button
+            style={{marginRight: '50px', width: '150px', height: '50px', fontSize: '15px', fontWeight: 'bold'}}
+            shape='round'
+            onClick={() => {
+              navigate("/login");
+            }}
+          >
+            로그인
+          </Button>
+          <Button
+            shape='round'
+            style={{ width: '150px', height: '50px', fontSize: '15px', fontWeight: 'bold'}}
+            onClick={() => {
+              navigate("/signup");
+            }}
+          >
+            회원가입
+          </Button>
+        </Space>
       </div>
-      <Button
-        type='primary'
-        onClick={() => {
-          navigate("/login");
-        }}
-      >
-        로그인
-      </Button>
-      <Button
-        type='primary'
-        onClick={() => {
-          navigate("/signup");
-        }}
-      >
-        회원가입
-      </Button>
     </div>
   );
 };

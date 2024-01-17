@@ -215,11 +215,26 @@ const ProblemPage: React.FC = () => {
       title: "티어",
       dataIndex: "problem_tier",
       width: "10%",
-    },{
+    },
+    {
       title: "알고리즘",
       dataIndex: "problem_algorithm",
       width: "20%",
-    }
+    },
+    {
+      title: "그룹에 추가하기",
+      key: "action",
+      width: "5%",
+      render: (text, record) => (
+        <Dropdown menu={{ items }} placement='bottomLeft'>
+          <Button shape='round' size={"large"}>
+            {group}
+            <DownOutlined />
+          </Button>
+        </Dropdown>
+        // <Button onClick={() => onButtonClick(record.problem_id)}>클릭</Button>
+      ),
+    },
   ];
   const [problems, setProblems] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
@@ -234,6 +249,8 @@ const ProblemPage: React.FC = () => {
   const [data, setData] = useState<SelectProps["options"]>([]);
   const [value, setValue] = useState<string>();
 
+  const [group, setGroup] = useState<string>("default");
+
   useEffect(() => {
     loadProblems();
   }, [currentPage, isAdd]);
@@ -247,7 +264,7 @@ const ProblemPage: React.FC = () => {
 
   const { user, setUser } = context;
 
-  console.log("user", user)
+  console.log("user", user);
 
   const loadProblems = () => {
     axios
@@ -290,14 +307,14 @@ const ProblemPage: React.FC = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-  const items: MenuProps["items"] = tier_list.map((tier, index) => ({
-    label: tier,
-    key: index,
+  const items: MenuProps["items"] = user.group.map((group) => ({
+    key: group,
+    label: group,
     onClick: () => {
-      // Redirect to the selected group when an item is clicked
-      console.log();
+      setGroup(group)
+      console.log("group",group)
     },
-  }));
+  }))
 
   //TODO userContext 바꾸기....
 
@@ -324,6 +341,11 @@ const ProblemPage: React.FC = () => {
     setIsAdd(!isAdd);
   };
 
+  const onButtonClick = (problemId) => {
+    // 버튼 클릭시 실행할 로직
+    console.log(`버튼 클릭: 문제 ID ${problemId}`);
+  };
+
   //TODO 로직 꼬인거 고치기
   return (
     <>
@@ -347,23 +369,13 @@ const ProblemPage: React.FC = () => {
           type='number'
           style={{ width: "91%", height: 40 }}
           placeholder='백준 아이디를 입력해주세요.'
-          onChange={(e)=>{handleBjSearch(e.target.value)}}
+          onChange={(e) => {
+            handleBjSearch(e.target.value);
+          }}
         />
         <Button size={"large"} onClick={onAdd}>
           추가하기
         </Button>
-        {/* <Flex style={baseStyle} align='center'>
-          <TextField
-            style={{ width: "100%" }}
-            required
-            id='standard-required'
-            label='백준 문제 번호'
-            variant='standard'
-            margin='normal'
-            onChange={(e) => setProblem(e.target.value)}
-          />
-          <AddCircleIcon sx={{ fontSize: 50, color: "#448aff", margin: 10 }} />
-        </Flex> */}
       </Flex>
       <Table
         columns={columns}

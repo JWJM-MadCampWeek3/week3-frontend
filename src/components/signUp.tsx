@@ -198,7 +198,8 @@ const SignUp: React.FC = () => {
         <Button onClick={onBjIdCheck}>유효 검사</Button>
       </Flex>
 
-      <Button onClick={onSignUp}> 가입하기</Button>
+      <Button 
+            type='primary' onClick={onSignUp} style={{width:"100%", height: 40}}> 가입하기</Button>
     </Card>
   );
 };
