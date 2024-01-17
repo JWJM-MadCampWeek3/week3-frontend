@@ -241,6 +241,34 @@ const GptRecommendPage: React.FC = () => {
       dataIndex: "problem_algorithm",
       width: "10%",
     },
+    {
+      title: "나의 문제에",
+      dataIndex: "problem_algorithm",
+      width: "10%",
+      render: (text, record) => {
+        return (
+          <Button
+          onClick={() => {
+            axios
+              .post(`${API_URL}/user/problem/insert`, {
+                id: user.id,
+                problem: (record.problem_id.toString()),
+              })
+              .then((response) => {
+                setUser({
+                  ...user,
+                  problems: [...user.problems, problem],
+                });
+              });
+          }}
+            shape='round'
+            size={"large"}
+          >
+            추가
+          </Button>
+        );
+      },
+    },
   ];
   const [problems, setProblems] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
