@@ -66,9 +66,9 @@ const Profile = () => {
   //TODO 마이페이지로 옮기
   return (
     <Card style={{ margin: 10 }}>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+      {/* <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <SettingsIcon sx={{ fontSize: 25, color: "#b0bec5" }} />
-      </div>
+      </div> */}
       <Flex gap='middle' vertical align='center'>
         <img
           width={120}
@@ -76,7 +76,7 @@ const Profile = () => {
           src={user.image}
           style={{ borderRadius: "50%" }}
         />
-        <Text>{user.id}</Text>
+        <Text>{user.nickname}</Text>
         <Text>{tier_list[user.tier]}</Text>
         <Text>{user.bio}</Text>
       </Flex>

@@ -54,7 +54,7 @@ const BasicLayout: React.FC = () => {
                 size={"large"}
                 type="primary"
               >
-                새로운 그룹들
+                전체 그룹들
               </Button>
             </Col>
           </Row>
@@ -92,7 +92,7 @@ const BasicLayout: React.FC = () => {
           <Menu
             mode='inline'
             defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub2", "sub3"]}
+            defaultOpenKeys={["sub1", "sub2","sub3", "sub4"]}
           >
             <Menu.SubMenu key='sub1' icon={<UserOutlined />} title='나의 정보'>
               <Profile />

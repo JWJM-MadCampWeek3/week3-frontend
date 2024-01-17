@@ -230,7 +230,7 @@ const GroupAddPage: React.FC = () => {
     {
       title: "그룹 들어가기",
       key: "action",
-      width: "5%",
+      width: "8%",
       render: (text, record) => {
         // const items: MenuProps["items"] = user.group.map((group) => ({
         //   key: group,
@@ -243,8 +243,10 @@ const GroupAddPage: React.FC = () => {
         // }));
         return (
           <>
-            <Button onClick={() => onButtonClick(record.group_name)}>
-              클릭
+            <Button onClick={() => onButtonClick(record.group_name)} 
+                shape='round'
+                size={"large"}>
+              들어가기
             </Button>
           </>
         );

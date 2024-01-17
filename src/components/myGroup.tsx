@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useSearchParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { UserContext } from "../App.tsx";
 import axios from "axios";
@@ -39,6 +39,9 @@ const MyGroup = () => {
   const [group_length, setGroup_length] = useState<number>(0);
   const context = useContext(UserContext);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const group_name = searchParams.get("group_name");
+
   useEffect(() => {
     if (group) {
       setGroup_length(group.length);
@@ -69,7 +72,7 @@ const MyGroup = () => {
         });
     }
     // Replace with your actual endpoint and logic for fetching user info
-  }, [context?.user]);
+  }, [group_name]);
 
   if (!context) {
     return <div>로딩 중...</div>;
