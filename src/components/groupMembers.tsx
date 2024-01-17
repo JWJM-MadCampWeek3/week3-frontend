@@ -53,7 +53,7 @@ const GroupMembers = () => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, []);
+  }, [group_name]);
 
   return (
     <Card

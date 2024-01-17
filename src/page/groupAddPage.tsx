@@ -14,7 +14,7 @@ import { DownOutlined } from "@ant-design/icons";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
 import TextField from "@mui/material/TextField";
-import { SettingsRemote } from '@material-ui/icons';
+import { SettingsRemote } from "@material-ui/icons";
 import { UserContext } from "../App.tsx";
 
 const { Text, Title } = Typography;
@@ -72,7 +72,6 @@ const tier_list = [
   "Ruby I",
   "Master",
 ];
-
 
 const GroupAddPage: React.FC = () => {
   const handleSearch = (
@@ -181,6 +180,21 @@ const GroupAddPage: React.FC = () => {
       ),
   });
 
+  const onButtonClick = (group_name) => {
+    console.log("click", user.id, group_name);
+    axios
+      .post(`${API_URL}/group/join`, {
+        id: user.id,
+        group_name: group_name,
+      })
+      .then((response) => {
+        console.log("response", response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const columns: TableColumnsType<DataType> = [
     {
       title: "그룹 이름",
@@ -212,6 +226,29 @@ const GroupAddPage: React.FC = () => {
       title: "그룹 멤버수",
       dataIndex: "members",
       width: "10%",
+    },
+    {
+      title: "그룹 들어가기",
+      key: "action",
+      width: "5%",
+      render: (text, record) => {
+        // const items: MenuProps["items"] = user.group.map((group) => ({
+        //   key: group,
+        //   label: group,
+        //   onClick: () => {
+        //     setGroup(group);
+        //     handleSelectItem(group, group);
+        //     console.log("group", group);
+        //   },
+        // }));
+        return (
+          <>
+            <Button onClick={() => onButtonClick(record.group_name)}>
+              클릭
+            </Button>
+          </>
+        );
+      },
     },
   ];
   const [groups, setGroups] = useState<any[]>([]);
@@ -313,7 +350,6 @@ const GroupAddPage: React.FC = () => {
     setOpen(false);
   };
 
-
   //TODO 로직 꼬인거 고치기
   return (
     <>
@@ -373,15 +409,14 @@ const GroupAddPage: React.FC = () => {
               onChange={(e) => setGoalNumber(parseInt(e.target.value, 10))}
             />
           </Flex>
-          <Flex style={{ width: 400, justifyContent: "space-between", margin:10}}>
+          <Flex
+            style={{ width: 400, justifyContent: "space-between", margin: 10 }}
+          >
             <Flex justify='flex-start' align='center'>
               <Text>티어제한</Text>
             </Flex>
             <Flex justify='flex-end' align='center'>
-              <Dropdown.Button
-                icon={<DownOutlined />}
-                menu={{ items }}
-              >
+              <Dropdown.Button icon={<DownOutlined />} menu={{ items }}>
                 {tier_list[tier]}
               </Dropdown.Button>
             </Flex>

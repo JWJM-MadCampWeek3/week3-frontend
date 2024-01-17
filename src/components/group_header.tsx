@@ -32,7 +32,6 @@ const GroupHeader = () => {
   }, []);
 
   useEffect(() => {
-    console.log("groups", groups)
     setItems(
       groups.map((group) => ({
         key: group,
@@ -48,7 +47,6 @@ const GroupHeader = () => {
 
   useEffect(() => {
     // Fetch group  from server
-    console.log(context?.user.id, groups)
     axios
       .post(`${API_URL}/user_Info`, { id: context?.user.id })
       .then((response) => {

@@ -53,7 +53,6 @@ const GroupProblem = () => {
                       ...user,
                       problems: [...user.problems, problem],
                     });
-                    console.log("newUser", user);
                     setIsChange(!isChange);
                   });
               }}
@@ -78,7 +77,7 @@ const GroupProblem = () => {
     axios.post(`${API_URL}/user_Info`, {id: user.id}).then((response) => {
       setProblems(response.data.problems);
     });
-  }, [isChange]);
+  }, [isChange,group_name]);
 
     // 조건부 렌더링을 여기서 수행
     if (!context) {

@@ -197,14 +197,48 @@ const ProblemPage: React.FC = () => {
         text
       ),
   });
-  
-  const [selectedItems, setSelectedItems] = useState<{ [key: string]: string }>({});
+
+  const [selectedItems, setSelectedItems] = useState<{ [key: string]: string }>(
+    {}
+  );
+
+  const [open, setOpen] = useState(false);
+
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const onOK = (problemId) => {
+    handleOk(problemId);
+  };
+
+  const handleOk = (problemId) => {
+    console.log("problemId Group", problemId, group);
+    axios
+      .post(`${API_URL}/group/problem/insert`, {
+        group_name: group,
+        problem: problemId.toString(),
+      })
+      .then((response) => {
+        setOpen(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    setGroup("default");
+    setOpen(false);
+  };
+
+  const handleCancel = () => {
+    setGroup("default");
+    setOpen(false);
+  };
 
   // 특정 행에 대한 아이템 선택을 처리하는 함수
   const handleSelectItem = (problemId, itemLabel) => {
-    setSelectedItems(prev => ({
+    setSelectedItems((prev) => ({
       ...prev,
-      [problemId]: itemLabel
+      [problemId]: itemLabel,
     }));
   };
 
@@ -232,19 +266,46 @@ const ProblemPage: React.FC = () => {
       width: "20%",
     },
     {
-      title: "그룹에 추가하기",
+      title: "문제 추가",
       key: "action",
       width: "5%",
-      render: (text, record) => (
-        // <Dropdown menu={{ items }} placement='bottomLeft'>
-        //   <Button shape='round' size={"large"}>
-            
-        //   {selectedItems[record.problem_id] || '선택'}
-        //     <DownOutlined />
-        //   </Button>
-        // </Dropdown>
-        <Button onClick={() => onButtonClick(record.problem_id)}>클릭</Button>
-      ),
+      render: (text, record) => {
+        const items: MenuProps["items"] = user.group.map((group) => ({
+          key: group,
+          label: group,
+          onClick: () => {
+            setGroup(group);
+            handleSelectItem(group, group);
+            console.log("group", group);
+          },
+        }));
+        return (
+          <>
+            <Button onClick={() => onButtonClick(record.problem_id)}>
+              클릭
+            </Button>
+            <Modal
+              open={open}
+              title='문제 그룹에 추가하기'
+              onOk={() => onOK(record.problem_id)}
+              onCancel={handleCancel}
+              footer={(_, { OkBtn, CancelBtn }) => (
+                <>
+                  <CancelBtn />
+                  <OkBtn />
+                </>
+              )}
+            >
+              <Dropdown menu={{ items }} placement='bottomLeft'>
+                <Button shape='round' size={"large"}>
+                  {group}
+                  <DownOutlined />
+                </Button>
+              </Dropdown>
+            </Modal>
+          </>
+        );
+      },
     },
   ];
   const [problems, setProblems] = useState<any[]>([]);
@@ -318,15 +379,6 @@ const ProblemPage: React.FC = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-  const items: MenuProps["items"] = user.group.map((group) => ({
-    key: group,
-    label: group,
-    onClick: () => {
-      setGroup(group)
-      handleSelectItem(group, group)
-      console.log("group",group)
-    },
-  }))
 
   //TODO userContext 바꾸기....
 
@@ -354,6 +406,7 @@ const ProblemPage: React.FC = () => {
   };
 
   const onButtonClick = (problemId) => {
+    showModal();
     // 버튼 클릭시 실행할 로직
     console.log(`버튼 클릭: 문제 ID ${problemId}`);
   };
@@ -393,7 +446,7 @@ const ProblemPage: React.FC = () => {
         columns={columns}
         dataSource={problems}
         pagination={{
-          pageSize: 10,
+          pageSize: 9,
           onChange: handlePageChange, // 페이지 변경 이벤트 처리
         }}
         style={{ width: "100%", margin: "10px auto 20px 0" }}
