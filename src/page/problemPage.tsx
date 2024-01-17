@@ -197,6 +197,16 @@ const ProblemPage: React.FC = () => {
         text
       ),
   });
+  
+  const [selectedItems, setSelectedItems] = useState<{ [key: string]: string }>({});
+
+  // 특정 행에 대한 아이템 선택을 처리하는 함수
+  const handleSelectItem = (problemId, itemLabel) => {
+    setSelectedItems(prev => ({
+      ...prev,
+      [problemId]: itemLabel
+    }));
+  };
 
   const columns: TableColumnsType<DataType> = [
     {
@@ -226,13 +236,14 @@ const ProblemPage: React.FC = () => {
       key: "action",
       width: "5%",
       render: (text, record) => (
-        <Dropdown menu={{ items }} placement='bottomLeft'>
-          <Button shape='round' size={"large"}>
-            {group}
-            <DownOutlined />
-          </Button>
-        </Dropdown>
-        // <Button onClick={() => onButtonClick(record.problem_id)}>클릭</Button>
+        // <Dropdown menu={{ items }} placement='bottomLeft'>
+        //   <Button shape='round' size={"large"}>
+            
+        //   {selectedItems[record.problem_id] || '선택'}
+        //     <DownOutlined />
+        //   </Button>
+        // </Dropdown>
+        <Button onClick={() => onButtonClick(record.problem_id)}>클릭</Button>
       ),
     },
   ];
@@ -312,6 +323,7 @@ const ProblemPage: React.FC = () => {
     label: group,
     onClick: () => {
       setGroup(group)
+      handleSelectItem(group, group)
       console.log("group",group)
     },
   }))
