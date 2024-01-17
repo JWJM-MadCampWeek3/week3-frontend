@@ -11,12 +11,13 @@ import PageNotFound from "./page/404.tsx";
 import GroupAddPage from "./page/groupAddPage.tsx";
 import RankPage from "./page/rankPage.tsx";
 import ProblemPage from "./page/problemPage.tsx";
+import GptRecommendPage from './page/gptRecommendPage.tsx';
 
 interface User {
   id: string;
   nickname: string;
   bj_id: string;
-  tier: string;
+  tier: number;
   image: string;
   bio: string;
   group: string[];
@@ -36,7 +37,7 @@ const App = () => {
     id: "TEST",
     nickname: "테스트",
     bj_id: "test",
-    tier: "티어 없음",
+    tier: 0,
     image: "./images/user.png",
     bio: "테스트입니다.",
     group: ["default"],
@@ -58,6 +59,7 @@ const App = () => {
                   <Route path='group/add' element={<GroupAddPage />} />
                   <Route path='rank' element={<RankPage />} />
                   <Route path='problem' element={<ProblemPage />} />
+                  <Route path='problem/gpt' element={<GptRecommendPage />} />
                 </Route>
                 <Route path='*' element={<PageNotFound />} />
               </Routes>

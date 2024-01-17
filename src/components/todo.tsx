@@ -12,7 +12,7 @@ import { Card } from "antd";
 const API_URL = "http://143.248.219.4:8080";
 
 const ToDo = () => {
-  const [group, setGroup] = useState([]);
+  const [group, setGroup] = useState<string[]>(["default"]);
   const [checked, setChecked] = useState<number[]>([]);
   const context = useContext(UserContext);
 
@@ -45,7 +45,9 @@ const ToDo = () => {
         .post(`${API_URL}/user_Info`, { id: context.user.id })
         .then((response) => {
           // Assuming the response body has a 'group' field that is an array
-          setGroup(response.data.todo_problems);
+          if (response.data.todo_problems) {
+            setGroup(response.data.todo_problems);
+          }
         })
         .catch((error) => {
           console.error("There was an error fetching the group info", error);

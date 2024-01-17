@@ -46,7 +46,6 @@ const month_month = String(lastMonth.getMonth() + 1).padStart(2, "0");
 
 const lastMonthFormatted = `${year_month}-${month_month}`;
 
-console.log(lastMonthFormatted); // 출력: "2021-12"
 
 function formatTime(seconds) {
   const hours = Math.floor(seconds / 3600); // 1시간 = 3600초
@@ -208,10 +207,8 @@ const RankPage: React.FC = () => {
 
   useEffect(() => {
     if (isDate === "true") {
-      console.log("true", date);
       loadDateRankers();
     } else {
-      console.log("false", month);
       loadMonthRankers();
     }
   }, [group_name, currentPage, date, isDate, month]);
@@ -277,7 +274,6 @@ const RankPage: React.FC = () => {
   };
 
   const onDateChange: DatePickerProps["onChange"] = (date, dateString) => {
-    console.log(date, dateString);
     if (date === null) {
       setDate("");
     } else {
@@ -286,8 +282,6 @@ const RankPage: React.FC = () => {
   };
 
   const onMonthChange: DatePickerProps["onChange"] = (date, dateString) => {
-    console.log("???", dateString);
-    console.log(date, dateString);
     if (date === null) {
       setMonth("");
     } else {
@@ -301,7 +295,7 @@ const RankPage: React.FC = () => {
         {isDate === "true" ? (
           <DatePicker
             defaultValue={dayjs(yesterdayDateString, "YYYY-MM-DD")}
-            // value={dayjs(date, "YYYY-MM-DD")}
+            value={dayjs(date, "YYYY-MM-DD")}
             placeholder='랭킹 날짜'
             onChange={onDateChange}
             size='large'
@@ -310,7 +304,7 @@ const RankPage: React.FC = () => {
           <DatePicker
             defaultValue={dayjs(lastMonthFormatted, "YYYY-MM")}
             picker='month'
-            // value={dayjs(month, "YYYY-MM")}
+            value={dayjs(month, "YYYY-MM")}
             placeholder='랭킹 날짜'
             onChange={onMonthChange}
             size='large'

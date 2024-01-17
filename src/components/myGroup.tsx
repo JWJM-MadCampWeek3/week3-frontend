@@ -35,8 +35,15 @@ function RenderRow(props) {
 }
 
 const MyGroup = () => {
-  const [group, setGroup] = useState([]);
+  const [group, setGroup] = useState<string[]>(["default"]);
+  const [group_length, setGroup_length] = useState<number>(0);
   const context = useContext(UserContext);
+
+  useEffect(() => {
+    if (group) {
+      setGroup_length(group.length);
+    }
+  }, [group]);
 
   useEffect(() => {
     if (context) {
@@ -53,7 +60,9 @@ const MyGroup = () => {
         .post(`${API_URL}/user_Info`, { id: context.user.id })
         .then((response) => {
           // Assuming the response body has a 'group' field that is an array
-          setGroup(response.data.group);
+          if (response.data.group) {
+            setGroup(response.data.group);
+          }
         })
         .catch((error) => {
           console.error("There was an error fetching the group info", error);
@@ -75,16 +84,20 @@ const MyGroup = () => {
           bgcolor: "background.paper",
         }}
       >
-        <FixedSizeList
-          height={200}
-          width='100%'
-          itemSize={46}
-          itemCount={group.length}
-          overscanCount={5}
-          itemData={group} // pass groups as itemData to RenderRow
-        >
-          {RenderRow}
-        </FixedSizeList>
+        {group ? (
+          <FixedSizeList
+            height={200}
+            width='100%'
+            itemSize={46}
+            itemCount={group_length}
+            overscanCount={5}
+            itemData={group} // pass groups as itemData to RenderRow
+          >
+            {RenderRow}
+          </FixedSizeList>
+        ) : (
+          <></>
+        )}
       </Box>
     </Card>
   );

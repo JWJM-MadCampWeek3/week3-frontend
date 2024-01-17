@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { SearchOutlined } from "@ant-design/icons";
@@ -15,6 +15,7 @@ import type { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
 import TextField from "@mui/material/TextField";
 import { SettingsRemote } from '@material-ui/icons';
+import { UserContext } from "../App.tsx";
 
 const { Text, Title } = Typography;
 
@@ -236,12 +237,12 @@ const GroupAddPage: React.FC = () => {
     axios
       .get(`${API_URL}/group/list`)
       .then(async (response) => {
-        const groupsData = response.data;
+        const groupsData = response.data.group_names;
         const updatedGroups = await Promise.all(
           groupsData.map(async (group) => {
             try {
               const response = await axios.post(`${API_URL}/group/Info`, {
-                group_name: group.group_name,
+                group_name: group,
               });
               return {
                 group_name: response.data.group_name,
@@ -276,7 +277,14 @@ const GroupAddPage: React.FC = () => {
       setTier(index);
     },
   }));
+  const context = useContext(UserContext);
 
+  // 조건부 렌더링을 여기서 수행
+  if (!context) {
+    return <div>로딩 중...</div>;
+  }
+
+  const { user, setUser } = context;
   const showModal = () => {
     setOpen(true);
   };
@@ -284,7 +292,7 @@ const GroupAddPage: React.FC = () => {
     axios
       .post(`${API_URL}/group/create`, {
         group_name: groupName,
-        manager_id: "TODO: manager_id",
+        manager_id: user.id,
         goal_time: goalTime,
         goal_number: goalNumber,
         tier: tier,
@@ -293,7 +301,6 @@ const GroupAddPage: React.FC = () => {
         group_bio: groupBio,
       })
       .then((response) => {
-        console.log(response);
         setOpen(false);
       })
       .catch((error) => {
@@ -305,6 +312,7 @@ const GroupAddPage: React.FC = () => {
   const handleCancel = () => {
     setOpen(false);
   };
+
 
   //TODO 로직 꼬인거 고치기
   return (
@@ -374,7 +382,7 @@ const GroupAddPage: React.FC = () => {
                 icon={<DownOutlined />}
                 menu={{ items }}
               >
-                제한 없음
+                {tier_list[tier]}
               </Dropdown.Button>
             </Flex>
           </Flex>

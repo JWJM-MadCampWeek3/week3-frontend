@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "antd";
 import Box from "@mui/material/Box";
@@ -20,21 +20,17 @@ const GroupProblem = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const group_name = searchParams.get("group_name");
 
+  const [problems, setProblems] = React.useState<string[]>([]);
+    const context = useContext(UserContext);
+
+    // TODO: 이미
   function RenderRow(props: ListChildComponentProps & { data: any[] }) {
     const { index, style, data } = props;
     const problem = data[index];
 
-    const context = useContext(UserContext);
 
-    // 조건부 렌더링을 여기서 수행
-    if (!context) {
-      return <div>로딩 중...</div>;
-    }
-
-    const { user, setUser } = context;
-    console.log(user.id, user.todo_problems);
-
-    // TODO: 이미 넣었던 문제 버튼 변경...ㅋㅋ
+    
+    //넣었던 문제 버튼 변경...ㅋㅋ
     return (
       <ListItem style={style} key={index} component='div' disablePadding>
         <ListItemButton>
@@ -42,20 +38,23 @@ const GroupProblem = () => {
             primary={problem}
             secondary={<React.Fragment></React.Fragment>}
           />
-          {user.problems.includes(problem) ? (
+          {problems.includes(problem) ? (
             <AddCircleIcon sx={{ fontSize: 25, color: "#e0e0e0" }} />
           ) : (
             <AddCircleIcon
               onClick={() => {
-                console.log(user.id, problem);
                 axios
                   .post(`${API_URL}/user/problem/insert`, {
                     id: user.id,
                     problem: problem,
                   })
                   .then((response) => {
-                    console.log("??")
-                    setIsChange(true);
+                    setUser({
+                      ...user,
+                      problems: [...user.problems, problem],
+                    });
+                    console.log("newUser", user);
+                    setIsChange(!isChange);
                   });
               }}
               sx={{ fontSize: 25, color: "#448aff" }}
@@ -76,8 +75,17 @@ const GroupProblem = () => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
+    axios.post(`${API_URL}/user_Info`, {id: user.id}).then((response) => {
+      setProblems(response.data.problems);
+    });
   }, [isChange]);
 
+    // 조건부 렌더링을 여기서 수행
+    if (!context) {
+      return <div>로딩 중...</div>;
+    }
+
+    const { user, setUser } = context;
   return (
     <Box
       sx={{

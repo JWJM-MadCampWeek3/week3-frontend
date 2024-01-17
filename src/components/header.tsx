@@ -36,7 +36,6 @@ const Header: React.FC = () => {
   return (
     <header>
       <StyledTabs
-        defaultActiveKey='1'
         centered
         onTabClick={onTabClick}
         items={[

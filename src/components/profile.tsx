@@ -6,6 +6,41 @@ import SettingsIcon from "@mui/icons-material/Settings";
 
 const { Text, Title } = Typography;
 
+const tier_list = [
+  "티어 없음",
+  "Bronze V",
+  "Bronze IV",
+  "Bronze III",
+  "Bronze II",
+  "Bronze I",
+  "Silver V",
+  "Silver IV",
+  "Silver III",
+  "Silver II",
+  "Silver I",
+  "Gold V",
+  "Gold IV",
+  "Gold III",
+  "Gold II",
+  "Gold I",
+  "Platinum V",
+  "Platinum IV",
+  "Platinum III",
+  "Platinum II",
+  "Platinum I",
+  "Diamond V",
+  "Diamond IV",
+  "Diamond III",
+  "Diamond II",
+  "Diamond I",
+  "Ruby V",
+  "Ruby IV",
+  "Ruby III",
+  "Ruby II",
+  "Ruby I",
+  "Master",
+];
+
 const Profile = () => {
   const context = useContext(UserContext);
 
@@ -42,7 +77,7 @@ const Profile = () => {
           style={{ borderRadius: "50%" }}
         />
         <Text>{user.id}</Text>
-        <Text>{user.tier}</Text>
+        <Text>{tier_list[user.tier]}</Text>
         <Text>{user.bio}</Text>
       </Flex>
     </Card>

@@ -117,9 +117,9 @@ const GroupPage = () => {
                         <img width={16} height={20} src={"./images/tier.png"} />
                         {group ? tier_list[group.tier] : null}
                         <TimerIcon />
-                        {group ? tier_list[group.goal_time] : null}
+                        {group ? group.goal_time+" 시간" : null}
                         <RuleIcon />
-                        {group ? tier_list[group.goal_number] : null}
+                        {group ? group.goal_number+" 문제" : null}
                       </Space>
                     </Flex>
                   </Flex>

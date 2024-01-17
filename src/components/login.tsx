@@ -9,41 +9,6 @@ import { Alert } from "antd";
 
 const API_URL = "http://143.248.219.4:8080";
 
-const tier_list = [
-  "티어 없음",
-  "Bronze V",
-  "Bronze IV",
-  "Bronze III",
-  "Bronze II",
-  "Bronze I",
-  "Silver V",
-  "Silver IV",
-  "Silver III",
-  "Silver II",
-  "Silver I",
-  "Gold V",
-  "Gold IV",
-  "Gold III",
-  "Gold II",
-  "Gold I",
-  "Platinum V",
-  "Platinum IV",
-  "Platinum III",
-  "Platinum II",
-  "Platinum I",
-  "Diamond V",
-  "Diamond IV",
-  "Diamond III",
-  "Diamond II",
-  "Diamond I",
-  "Ruby V",
-  "Ruby IV",
-  "Ruby III",
-  "Ruby II",
-  "Ruby I",
-  "Master",
-];
-
 const LoginPage: React.FC = () => {
   const [id, setId] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
@@ -74,7 +39,7 @@ const LoginPage: React.FC = () => {
           id: id,
           nickname: response.data.userinfo.nickname,
           bj_id: response.data.userinfo.bj_id,
-          tier: tier_list[response.data.userinfo.tier],
+          tier: response.data.userinfo.tier,
           image: response.data.userinfo.profileImageUrl,
           bio: response.data.userinfo.bio,
           group: response.data.userinfo.group,

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { SearchOutlined } from "@ant-design/icons";
 import { Typography } from "antd";
@@ -9,7 +9,7 @@ import type {
   TableColumnType,
   MenuProps,
 } from "antd";
-import { Button, Input, Space, Table, Modal, Flex, Dropdown } from "antd";
+import { Button, Input, Space, Table, Modal, Flex, Dropdown, Card } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
@@ -26,26 +26,45 @@ type InputRef = GetRef<typeof Input>;
 
 type DataIndex = keyof DataType;
 
+const algorithmMap = {
+  "implementation": "구현",
+  "greedy": "그리디 알고리즘",
+  "dfs": "DFS",
+  "bfs": "BFS",
+  "binary_search": "이진 탐색",
+  "dp": "다이나믹 프로그래밍",
+  "graphs": "그래프 이론",
+  "None": "상관없음"
+};
+
+const findFullName = (abbreviation) => {
+  return algorithmMap[abbreviation] || "알 수 없는 알고리즘";
+};
+
+const options: SelectProps["options"] = [
+  { label: "구현", value: "implementation" },
+  { label: "그리디 알고리즘", value: "greedy" },
+  { label: "DFS", value: "dfs" },
+  { label: "BFS", value: "bfs" },
+  { label: "이진 탐색", value: "binary_search" },
+  { label: "다이나믹 프로그래밍", value: "dp" },
+  { label: "그래프 이론", value: "graphs" },
+  { label: "상관없음", value: "None" },
+];
+
 const API_URL = "http://143.248.219.4:8080";
 
 const baseStyle: React.CSSProperties = {
   width: 400,
 };
 
-const algorithmMap = {
-  implementation: "구현",
-  greedy: "그리디 알고리즘",
-  dfs: "DFS",
-  bfs: "BFS",
-  binary_search: "이진 탐색",
-  dp: "다이나믹 프로그래밍",
-  graphs: "그래프 이론",
-  None: "상관없음",
-};
-
-const findFullName = (abbreviation) => {
-  return algorithmMap[abbreviation] || abbreviation;
-};
+interface DataType {
+  key: React.Key;
+  problem_id: string;
+  problem_title: string;
+  problem_tier: string;
+  problem_algorithm: string;
+}
 
 const tier_list = [
   "티어 없음",
@@ -82,15 +101,18 @@ const tier_list = [
   "Master",
 ];
 
-interface DataType {
-  key: React.Key;
-  problem_id: string;
-  problem_title: string;
-  problem_tier: string;
-  problem_algorithm: string;
-}
+const GptRecommendPage: React.FC = () => {
+  const handleChange = (value: string[]) => {
+    console.log(`selected ${value}`);
+    if (value.includes("None")) {
+      setIsNone(true);
+      value = ["None"];
+    } else {
+      setIsNone(false);
+    }
+    setKeys(value);
+  };
 
-const ProblemPage: React.FC = () => {
   const handleSearch = (
     selectedKeys: string[],
     confirm: FilterDropdownProps["confirm"],
@@ -101,7 +123,6 @@ const ProblemPage: React.FC = () => {
     setSearchedColumn(dataIndex);
   };
 
-  const navigate = useNavigate();
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText("");
@@ -202,24 +223,24 @@ const ProblemPage: React.FC = () => {
     {
       title: "문제 번호",
       dataIndex: "problem_id",
-      width: "20%",
+      width: "10%",
       ...getColumnSearchProps("problem_id"),
     },
     {
       title: "제목",
       dataIndex: "problem_title",
       width: "20%",
-      ...getColumnSearchProps("problem_title"),
     },
     {
       title: "티어",
       dataIndex: "problem_tier",
       width: "10%",
-    },{
+    },
+    {
       title: "알고리즘",
       dataIndex: "problem_algorithm",
-      width: "20%",
-    }
+      width: "10%",
+    },
   ];
   const [problems, setProblems] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
@@ -227,16 +248,16 @@ const ProblemPage: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
-  const [isAdd, setIsAdd] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const [problem, setProblem] = useState("");
+  const [keys, setKeys] = useState<string[]>(["None"]);
 
-  const [data, setData] = useState<SelectProps["options"]>([]);
-  const [value, setValue] = useState<string>();
+  const [isNone, setIsNone] = useState<boolean>(false);
 
   useEffect(() => {
     loadProblems();
-  }, [currentPage, isAdd]);
+  }, [currentPage]);
 
   const context = useContext(UserContext);
 
@@ -247,44 +268,8 @@ const ProblemPage: React.FC = () => {
 
   const { user, setUser } = context;
 
-  console.log("user", user)
-
-  const loadProblems = () => {
-    axios
-      .post(`${API_URL}/user_Info`, {
-        id: user.id,
-      })
-      .then(async (response) => {
-        const problemsData = response.data.problems;
-        try {
-          // problemsData의 각 problem에 대한 요청을 생성하고, 모든 요청을 Promise.all에 전달하여 동시에 실행합니다.
-          const problemDetailsRequests = problemsData.map((problemId) =>
-            axios.get(`${API_URL}/problem/${problemId}`)
-          );
-
-          // 모든 요청이 완료되면 각 응답으로부터 필요한 정보를 추출하여 새로운 객체 배열을 생성합니다.
-          const responses = await Promise.all(problemDetailsRequests);
-          const updatedProblems = responses.map((response) => {
-            const problemDetails = response.data; // 가정: 응답에서 필요한 데이터가 .data에 있음
-            return {
-              key: problemDetails.id,
-              problem_id: problemDetails.problemId,
-              problem_title: problemDetails.titleKo,
-              problem_tier: tier_list[problemDetails.level],
-              problem_algorithm: findFullName(problemDetails.key),
-            };
-          });
-
-          // 업데이트된 데이터를 상태에 저장합니다.
-          setProblems(updatedProblems);
-        } catch (error) {
-          console.error("Error fetching problem details:", error);
-        }
-      })
-      .catch((error) => {
-        console.log("Error fetching user problems:", error);
-      });
-  };
+  // TODO 이거 어케 생긴거지??...??뒤저바야될듯....하...유저인포 찾고 ,,, 유저의 문제,,, 가져오기...
+  const loadProblems = () => {};
 
   // 페이지 변경 이벤트 처리 함수
   const handlePageChange = (page) => {
@@ -299,77 +284,121 @@ const ProblemPage: React.FC = () => {
     },
   }));
 
-  //TODO userContext 바꾸기....
-
-  const handleBjSearch = (newValue: string) => {
-    setValue(newValue);
+  const onRecommend = () => {
+    if (keys.includes("None")) {
+      setKeys([
+        "implemntation",
+        "greedy",
+        "dfs",
+        "bfs",
+        "binary_search",
+        "dp",
+        "graphs",
+      ]);
+      axios
+        .post(`${API_URL}/recommend/list`, {
+          tier: user.tier,
+          keys: [
+            "implemntation",
+            "greedy",
+            "dfs",
+            "bfs",
+            "binary_search",
+            "dp",
+            "graphs",
+          ],
+        })
+        .then((response) => {
+          const problemsData = response.data.problems
+          const updatedProblems = problemsData.map((problem) => (
+            {
+            key: problem.id,
+            problem_id: problem.problemId,
+            problem_title: problem.titleKo,
+            problem_tier: tier_list[problem.level],
+            problem_algorithm: findFullName(problem.key),
+          }));
+          setProblems(updatedProblems);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios
+        .post(`${API_URL}/recommend/list`, {
+          tier: user.tier,
+          keys: keys,
+        })
+        .then((response) => {
+          const problemsData = response.data.problems
+          const updatedProblems = problemsData.map((problem) => (
+            {
+            key: problem.id,
+            problem_id: problem.problemId,
+            problem_title: problem.titleKo,
+            problem_tier: tier_list[problem.level],
+            problem_algorithm: findFullName(problem.key),
+          }));
+          setProblems(updatedProblems);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
-  const handleChange = (newValue: string) => {
-    setValue(newValue);
-  };
-
-  const onAdd = () => {
-    axios
-      .post(`${API_URL}/user/problem/insert`, {
-        id: user.id,
-        problem: value,
-      })
-      .then((response) => {
-        loadProblems();
-      })
-      .catch((error) => {
-        console.log("Error fetching user problems:", error);
-      });
-    setIsAdd(!isAdd);
-  };
+  //TODO userContext 바꾸기...
 
   //TODO 로직 꼬인거 고치기
   return (
     <>
       <Flex justify='flex-end' align='center'>
         <Title level={3} style={{ width: "100%", margin: "10px auto 20px 0" }}>
-          나의 문제집
+          추천 문제집
         </Title>
-        <Button
-          type='primary'
-          shape='round'
-          size={"large"}
-          onClick={() => {
-            navigate("/problem/gpt");
-          }}
-        >
-          GPT한테 문제 추천받기
-        </Button>
       </Flex>
-      <Flex justify='space-between' align='center'>
-        <Input
-          type='number'
-          style={{ width: "91%", height: 40 }}
-          placeholder='백준 아이디를 입력해주세요.'
-          onChange={(e)=>{handleBjSearch(e.target.value)}}
-        />
-        <Button size={"large"} onClick={onAdd}>
-          추가하기
-        </Button>
-        {/* <Flex style={baseStyle} align='center'>
-          <TextField
-            style={{ width: "100%" }}
-            required
-            id='standard-required'
-            label='백준 문제 번호'
-            variant='standard'
-            margin='normal'
-            onChange={(e) => setProblem(e.target.value)}
-          />
-          <AddCircleIcon sx={{ fontSize: 50, color: "#448aff", margin: 10 }} />
-        </Flex> */}
-      </Flex>
+      <Card style={{ width: "100%" }}>
+        <Flex justify='space-between' align='center'>
+          <Text>문제 유형 선택</Text>
+          {isNone ? (
+            <Select
+              mode='multiple'
+              allowClear
+              size='large'
+              style={{ width: "70%" }}
+              placeholder='Please select'
+              value={["None"]}
+              onChange={handleChange}
+              options={options}
+            />
+          ) : (
+            <Select
+              mode='multiple'
+              allowClear
+              size='large'
+              style={{ width: "70%" }}
+              placeholder='Please select'
+              defaultValue={["None"]}
+              onChange={handleChange}
+              options={options}
+            />
+          )}
+          <Button
+            type='primary'
+            shape='round'
+            size={"large"}
+            onClick={onRecommend}
+          >
+            추천 받기
+          </Button>
+        </Flex>
+      </Card>
+
       <Table
         columns={columns}
         dataSource={problems}
         pagination={{
-          pageSize: 10,
+          pageSize: 9,
           onChange: handlePageChange, // 페이지 변경 이벤트 처리
         }}
         style={{ width: "100%", margin: "10px auto 20px 0" }}
@@ -378,4 +407,4 @@ const ProblemPage: React.FC = () => {
   );
 };
 
-export default ProblemPage;
+export default GptRecommendPage;

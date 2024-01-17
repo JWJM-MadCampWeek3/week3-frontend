@@ -73,7 +73,6 @@ const MyStopwatch = () => {
   const { user, setUser } = context;
 
   const onStart = () => {
-    reset();
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, "0");
@@ -111,10 +110,10 @@ const MyStopwatch = () => {
       seconds: seconds,
       isRunning: false,
     };
-    console.log(user.id);
     axios.post(`${API_URL}/stop`, {
       id: user.id,
       date: formattedDate,
+      duration: hours * 3600 + minutes * 60 + seconds,
     });
     setIsRunning_(false);
     localStorage.setItem("stopwatchInfo", JSON.stringify(stopwatchInfo));
